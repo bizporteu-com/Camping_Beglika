@@ -489,7 +489,7 @@
   .stay .eyebrow{color:var(--beige-warm)}
   .stay h2.display{color:var(--paper)}
   .stay h2.display em{color:var(--beige-warm)}
-  .stay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+  .stay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:36px}
   .stay-card{
     background: oklch(0.18 0.025 155 / .85);
     border:1px solid oklch(0.96 0.012 80 / .1);
@@ -1073,7 +1073,7 @@
     <div class="section-head">
       <div>
         <div class="eyebrow reveal"><span class="tick"></span><span>Глава 03 — Настаняване</span></div>
-        <h2 class="display reveal delay-1" data-copy="stay-h2">Три начина да <em>спите под звездите</em>.</h2>
+        <h2 class="display reveal delay-1" data-copy="stay-h2">Четири начина да <em>спите под звездите</em>.</h2>
       </div>
     </div>
 
@@ -1114,7 +1114,25 @@
         </div>
       </article>
 
-      <article class="stay-card reveal delay-1">
+      <article class="stay-card reveal delay-2">
+        <div class="photo" style="aspect-ratio:4/3;padding:0;background:none;overflow:hidden">
+          <img src="assets/forest-sun-rays.jpg" alt="Боровата гора при зоната за каравани" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)" />
+        </div>
+        <div class="stay-body">
+          <div class="stay-meta">
+            <span class="tag">Зона каравани</span>
+            <span class="price">от 35 лв / нощ</span>
+          </div>
+          <h3>Поляна за каравани</h3>
+          <p>Място за каравана или кемпер с електричество 220 V и питейна вода на крачка. Достъп по асфалтов път, до боровата гора.</p>
+          <div class="row">
+            <div class="specs"><span>Едно място</span><span>· с ток и вода</span></div>
+            <a href="#book"><span>Резервирай</span><span class="arrow"></span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="stay-card reveal delay-3">
         <div class="photo" style="aspect-ratio:4/3;padding:0;background:none;overflow:hidden">
           <img src="assets/tent-pines-chairs.jpg" alt="Палатка между боровете с маса и столове" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)" />
         </div>
@@ -1499,7 +1517,7 @@
   body.density-dense h2.display{font-size:clamp(34px,4.2vw,64px)}
   body.density-dense .hero h1{font-size:clamp(48px,7.4vw,112px);line-height:.96}
   body.density-dense .ethos-grid{gap:48px}
-  body.density-dense .stay-grid{gap:20px}
+  body.density-dense .stay-grid{grid-template-columns:repeat(4,1fr);gap:20px}
   body.density-dense .journal-grid{gap:24px}
   body.density-dense .amenity{padding:30px 24px;min-height:200px}
   body.density-dense .stay-body{padding:22px}
@@ -1662,7 +1680,7 @@
       'ethos-h2':     'Тишина, която <em>се чува</em>.',
       'ethos-pull':   '„Донесете топла дреха. Оставете часовника вкъщи. Планината си има свое време.“',
       'amenities-h2': 'Всичко необходимо.<br><em>Нищо излишно.</em>',
-      'stay-h2':      'Три начина да <em>спите под звездите</em>.',
+      'stay-h2':      'Четири начина да <em>спите под звездите</em>.',
       'quote-body':   '„Дойдохме за уикенд. Останахме заради тишината — и хляба на изгрев.“',
       'quote-cite':   'Ива и Мартин · София · гости от 2019',
       'book-h2':      'Поляната ви <em>чака</em>.',
@@ -1678,7 +1696,7 @@
       'ethos-h2':     'Сурови часове. <em>Истински.</em>',
       'ethos-pull':   '„Това не е хотел с гледка. Това е планина, която ви пуска да останете.“',
       'amenities-h2': 'Остри сечива.<br><em>Топли койки.</em>',
-      'stay-h2':      'Три начина да <em>спите при стихиите</em>.',
+      'stay-h2':      'Четири начина да <em>спите при стихиите</em>.',
       'quote-body':   '„Тръгнахме на студ и се върнахме променени. Огънят прави това.“',
       'quote-cite':   'Петър · алпийски клуб, Пловдив · пролет 2024',
       'book-h2':      'Билото е <em>отворено</em>.',
@@ -1694,7 +1712,7 @@
       'ethos-h2':     'Където летата<br><em>се помнят</em>.',
       'ethos-pull':   '„Децата се връщат като родители. Запазихме инициалите им на кухненската врата.“',
       'amenities-h2': 'Всичко необходимо.<br><em>Нищо излишно.</em>',
-      'stay-h2':      'Три гнезда за <em>цялото семейство</em>.',
+      'stay-h2':      'Четири гнезда за <em>цялото семейство</em>.',
       'quote-body':   '„Дъщерите ни го наричат дом. Идваме всеки август, три поколения под боровете.“',
       'quote-cite':   'Семейство Стоянови · Пловдив · от 2011',
       'book-h2':      'Масата е <em>сложена</em>.',
