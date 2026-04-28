@@ -524,36 +524,33 @@
 
   /* ---------- AROUND (lake / activities) ---------- */
   .around{
-    background: oklch(0.08 0.02 230);
+    background: oklch(0.10 0.025 220);
     color:var(--paper);
     isolation:isolate;
     overflow:hidden;
   }
   .around .bg-photo{
-    background-image:url('assets/lake-milky-way.jpg');
-    background-position:center 40%;
-    opacity:.45;
+    background-image:url('assets/lake-kayakers.jpg');
+    background-position:center 45%;
+    opacity:.55;
   }
   .around .bg-overlay{
     background:
-      radial-gradient(ellipse 70% 55% at 50% 65%, oklch(0.18 0.05 230 / .25), transparent 70%),
-      linear-gradient(180deg, oklch(0.06 0.02 230 / .55) 0%, oklch(0.10 0.025 230 / .35) 40%, oklch(0.05 0.02 230 / .94) 100%);
+      radial-gradient(ellipse 70% 55% at 50% 25%, oklch(0.30 0.07 220 / .25), transparent 70%),
+      linear-gradient(180deg, oklch(0.10 0.025 220 / .55) 0%, oklch(0.12 0.025 220 / .35) 40%, oklch(0.08 0.02 220 / .92) 100%);
   }
   .around .wrap{position:relative;z-index:1}
   .around .eyebrow{color:var(--beige-warm)}
   .around h2.display{color:var(--paper)}
   .around h2.display em{color:var(--beige-warm)}
-  .around-intro{
-    display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;
-    margin-bottom:72px;
-  }
-  .around-intro p{
+  .around-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center}
+  .around-copy p{
     font-size:18px;line-height:1.65;color:oklch(0.96 0.012 80 / .78);
-    max-width:46ch;margin:0;font-weight:300;
+    max-width:46ch;margin:0 0 22px 0;font-weight:300;
   }
   .around-stats{
     display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-    margin-top:56px;
+    margin-top:36px;
     border-top:1px solid oklch(0.96 0.012 80 / .15);
   }
   .around-stat{
@@ -572,88 +569,35 @@
     font-size:11px;letter-spacing:.18em;text-transform:uppercase;
     color:oklch(0.96 0.012 80 / .65);
   }
-
-  /* Three moments at the lake */
-  .moments{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
-  }
-  .moment{
+  .around-photo{
     position:relative;border-radius:8px;overflow:hidden;
-    aspect-ratio:3/4;
-    border:1px solid oklch(0.96 0.012 80 / .12);
-    background:var(--ink);
+    aspect-ratio:5/4;
+    border:1px solid oklch(0.96 0.012 80 / .15);
   }
-  .moment img{
+  .around-photo img{
     width:100%;height:100%;object-fit:cover;display:block;
     transform:scale(1.05);
-    transition:transform 1.6s cubic-bezier(.2,.7,.2,1), filter .5s;
+    transition:transform 1.6s cubic-bezier(.2,.7,.2,1);
   }
-  .moment:hover img{transform:scale(1.12);filter:brightness(1.05)}
-  .moment::after{
+  .around-photo:hover img{transform:scale(1.12)}
+  .around-photo::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg, oklch(0 0 0 / .15) 0%, transparent 35%, oklch(0 0 0 / .80) 100%);
+    background:linear-gradient(180deg, transparent 55%, oklch(0 0 0 / .55));
     pointer-events:none;
   }
-  .moment-meta{
-    position:absolute;left:22px;right:22px;bottom:22px;
-    z-index:1;color:var(--paper);
+  .around-photo figcaption{
+    position:absolute;left:22px;right:22px;bottom:18px;
+    color:var(--paper);
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;
+    text-shadow:0 1px 6px oklch(0 0 0 / .6);
+    z-index:1;
   }
-  .moment-meta .when{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;letter-spacing:.20em;text-transform:uppercase;
-    color:oklch(0.96 0.012 80 / .75);
-    margin-bottom:8px;display:flex;align-items:center;gap:10px;
-  }
-  .moment-meta .when::before{
-    content:"";width:24px;height:1px;background:var(--beige-warm);display:inline-block;
-  }
-  .moment-meta .what{
-    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
-    font-size:26px;line-height:1.15;
-    text-shadow:0 2px 12px oklch(0 0 0 / .6);
-  }
-  .moment-meta .what em{color:var(--beige-warm);font-style:italic}
-
   @media (max-width:880px){
-    .around-intro{grid-template-columns:1fr;gap:24px}
-    .moments{grid-template-columns:1fr;gap:14px}
-    .moment{aspect-ratio:4/3}
+    .around-grid{grid-template-columns:1fr;gap:36px}
     .around-stats{grid-template-columns:repeat(3,1fr)}
     .around-stat .num{font-size:34px}
     .around-stat{padding-right:8px}
   }
-
-  /* ---------- PARALLAX QUOTE ---------- */
-  .quote{
-    position:relative;height:90vh;min-height:600px;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--paper);overflow:hidden;text-align:center;padding:0 40px;
-    isolation:isolate;
-  }
-  .quote .bg{
-    position:absolute;inset:-20% 0;z-index:-2;
-    background-image:url('assets/forest-sun-rays.jpg');
-    background-size:cover;background-position:center 50%;
-    will-change:transform;
-    transform:scale(1.1);
-  }
-  .quote .bg::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(ellipse 60% 50% at 50% 50%, oklch(0 0 0 / .25), oklch(0 0 0 / .75) 80%),
-      linear-gradient(180deg, oklch(0 0 0 / .55) 0%, oklch(0 0 0 / .35) 40%, oklch(0 0 0 / .7) 100%);
-  }
-  .quote blockquote{
-    margin:0;max-width:24ch;
-    font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
-    font-size:clamp(34px, 5vw, 64px);line-height:1.15;letter-spacing:-.005em;
-  }
-  .quote cite{
-    display:block;margin-top:32px;font-style:normal;
-    font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
-    color:oklch(0.96 0.012 80 / .8);
-  }
-  .quote cite .tick{display:inline-block;width:30px;height:1px;background:currentColor;vertical-align:middle;margin-right:14px;opacity:.6}
 
   /* ---------- PRICING ---------- */
   .pricing{
@@ -819,7 +763,6 @@
       animation:none !important;
     }
     .reveal{transition:opacity .3s ease}
-    .quote .bg{transform:scale(1.1) !important}
   }
 
   @media (max-width:880px){
@@ -1158,62 +1101,35 @@
   <div class="bg-photo"></div>
   <div class="bg-overlay"></div>
   <div class="mist"></div>
-  <div class="fireflies" data-fireflies="14"></div>
+  <div class="fireflies" data-fireflies="10"></div>
   <div class="wrap">
-    <div class="around-intro">
-      <div>
+    <div class="around-grid">
+      <div class="around-copy">
         <div class="eyebrow reveal"><span class="tick"></span><span>Глава 04 — Около поляната</span></div>
-        <h2 class="display reveal delay-1">Един язовир, <em>три различни мига</em>.</h2>
+        <h2 class="display reveal delay-1">Язовирът на <em>пет минути</em>.</h2>
+        <p class="reveal delay-2">Каяк сутрин, разходка до горския наблюдател преди обяд, риболов, който никой не бърза. Язовир Беглика е дъга от тих смърч и ясна вода — на пет минути пеша от рецепцията.</p>
+        <p class="reveal delay-3">Маркирани пътеки се вият по билото и слизат до водата. Велосипеди и каяки даваме под наем — попитайте на рецепцията за прогнозата за вятъра.</p>
+        <div class="around-stats reveal delay-3">
+          <div class="around-stat">
+            <span class="num">5 мин</span>
+            <span class="lbl">пеша до язовира</span>
+          </div>
+          <div class="around-stat">
+            <span class="num">12 км</span>
+            <span class="lbl">маркирани пътеки</span>
+          </div>
+          <div class="around-stat">
+            <span class="num">1 530 м</span>
+            <span class="lbl">надм. височина</span>
+          </div>
+        </div>
       </div>
-      <p class="reveal delay-2">Язовир Беглика е на пет минути пеша от рецепцията. Едни и същи дъски на пристана, но всеки час светлината е друга — и това, за което си дошъл, също.</p>
-    </div>
-
-    <div class="moments">
-      <figure class="moment reveal">
+      <figure class="around-photo reveal delay-2" style="margin:0">
         <img src="assets/lake-kayakers.jpg" alt="Каяк по язовир Беглика" loading="lazy" />
-        <div class="moment-meta">
-          <div class="when">07:30 · сутрин</div>
-          <div class="what"><em>Каяк</em> по тихата вода</div>
-        </div>
+        <figcaption>Сутрешен каяк · язовир Беглика</figcaption>
       </figure>
-      <figure class="moment reveal delay-1">
-        <img src="assets/lake-fisherman-mist.png" alt="Риболов в златна мъгла на язовира" loading="lazy" />
-        <div class="moment-meta">
-          <div class="when">06:12 · златен час</div>
-          <div class="what"><em>Риболов</em>, който никой не бърза</div>
-        </div>
-      </figure>
-      <figure class="moment reveal delay-2">
-        <img src="assets/lake-milky-way.jpg" alt="Млечният път над язовира" loading="lazy" />
-        <div class="moment-meta">
-          <div class="when">23:47 · среднощ</div>
-          <div class="what"><em>Млечен път</em> над водата</div>
-        </div>
-      </figure>
-    </div>
-
-    <div class="around-stats reveal delay-3">
-      <div class="around-stat">
-        <span class="num">5 мин</span>
-        <span class="lbl">пеша до язовира</span>
-      </div>
-      <div class="around-stat">
-        <span class="num">12 км</span>
-        <span class="lbl">маркирани пътеки</span>
-      </div>
-      <div class="around-stat">
-        <span class="num">1 530 м</span>
-        <span class="lbl">надм. височина</span>
-      </div>
     </div>
   </div>
-</section>
-
-<!-- ============== PARALLAX QUOTE ============== -->
-<section class="quote" id="parallax-quote">
-  <div class="bg" id="quoteBg"></div>
-  <blockquote data-copy="quote-body">„Дойдохме за уикенд. Останахме заради тишината — и хляба на изгрев.“</blockquote>
-  <cite><span class="tick"></span><span data-copy="quote-cite">Ива и Мартин · София · гости от 2019</span></cite>
 </section>
 
 <!-- ============== PRICING ============== -->
@@ -1415,20 +1331,6 @@
     if (window.scrollY > 80) nav.classList.add('solid');
     else nav.classList.remove('solid');
 
-    if (scrollRaf) return;
-    scrollRaf = requestAnimationFrame(() => {
-      scrollRaf = 0;
-      const vh = window.innerHeight;
-      // Quote section parallax (kept simple — direct transform)
-      const q = document.getElementById('parallax-quote');
-      const bg = document.getElementById('quoteBg');
-      if (q && bg) {
-        const r = q.getBoundingClientRect();
-        const progress = (vh - r.top) / (vh + r.height);
-        const y = (progress - 0.5) * 100;
-        bg.style.transform = `translateY(${y}px) scale(1.1)`;
-      }
-    });
   };
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
@@ -1681,8 +1583,6 @@
       'ethos-pull':   '„Донесете топла дреха. Оставете часовника вкъщи. Планината си има свое време.“',
       'amenities-h2': 'Всичко необходимо.<br><em>Нищо излишно.</em>',
       'stay-h2':      'Четири начина да <em>спите под звездите</em>.',
-      'quote-body':   '„Дойдохме за уикенд. Останахме заради тишината — и хляба на изгрев.“',
-      'quote-cite':   'Ива и Мартин · София · гости от 2019',
       'book-h2':      'Поляната ви <em>чака</em>.',
     },
     untamed: {
@@ -1697,8 +1597,6 @@
       'ethos-pull':   '„Това не е хотел с гледка. Това е планина, която ви пуска да останете.“',
       'amenities-h2': 'Остри сечива.<br><em>Топли койки.</em>',
       'stay-h2':      'Четири начина да <em>спите при стихиите</em>.',
-      'quote-body':   '„Тръгнахме на студ и се върнахме променени. Огънят прави това.“',
-      'quote-cite':   'Петър · алпийски клуб, Пловдив · пролет 2024',
       'book-h2':      'Билото е <em>отворено</em>.',
     },
     hearth: {
@@ -1713,8 +1611,6 @@
       'ethos-pull':   '„Децата се връщат като родители. Запазихме инициалите им на кухненската врата.“',
       'amenities-h2': 'Всичко необходимо.<br><em>Нищо излишно.</em>',
       'stay-h2':      'Четири гнезда за <em>цялото семейство</em>.',
-      'quote-body':   '„Дъщерите ни го наричат дом. Идваме всеки август, три поколения под боровете.“',
-      'quote-cite':   'Семейство Стоянови · Пловдив · от 2011',
       'book-h2':      'Масата е <em>сложена</em>.',
     },
   };
