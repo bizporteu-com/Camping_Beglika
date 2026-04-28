@@ -524,33 +524,36 @@
 
   /* ---------- AROUND (lake / activities) ---------- */
   .around{
-    background: oklch(0.10 0.02 220);
+    background: oklch(0.08 0.02 230);
     color:var(--paper);
     isolation:isolate;
     overflow:hidden;
   }
   .around .bg-photo{
-    background-image:url('assets/lake-kayakers.jpg');
-    background-position:center 45%;
-    opacity:.55;
+    background-image:url('assets/lake-milky-way.jpg');
+    background-position:center 40%;
+    opacity:.45;
   }
   .around .bg-overlay{
     background:
-      radial-gradient(ellipse 70% 55% at 50% 25%, oklch(0.30 0.07 220 / .25), transparent 70%),
-      linear-gradient(180deg, oklch(0.10 0.02 220 / .55) 0%, oklch(0.12 0.025 220 / .35) 40%, oklch(0.08 0.02 220 / .92) 100%);
+      radial-gradient(ellipse 70% 55% at 50% 65%, oklch(0.18 0.05 230 / .25), transparent 70%),
+      linear-gradient(180deg, oklch(0.06 0.02 230 / .55) 0%, oklch(0.10 0.025 230 / .35) 40%, oklch(0.05 0.02 230 / .94) 100%);
   }
   .around .wrap{position:relative;z-index:1}
   .around .eyebrow{color:var(--beige-warm)}
   .around h2.display{color:var(--paper)}
   .around h2.display em{color:var(--beige-warm)}
-  .around-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center}
-  .around-copy p{
+  .around-intro{
+    display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;
+    margin-bottom:72px;
+  }
+  .around-intro p{
     font-size:18px;line-height:1.65;color:oklch(0.96 0.012 80 / .78);
-    max-width:46ch;margin:0 0 22px 0;font-weight:300;
+    max-width:46ch;margin:0;font-weight:300;
   }
   .around-stats{
     display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-    margin-top:36px;
+    margin-top:56px;
     border-top:1px solid oklch(0.96 0.012 80 / .15);
   }
   .around-stat{
@@ -569,31 +572,52 @@
     font-size:11px;letter-spacing:.18em;text-transform:uppercase;
     color:oklch(0.96 0.012 80 / .65);
   }
-  .around-photo{
-    position:relative;border-radius:8px;overflow:hidden;
-    aspect-ratio:5/4;
-    border:1px solid oklch(0.96 0.012 80 / .15);
+
+  /* Three moments at the lake */
+  .moments{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
   }
-  .around-photo img{
+  .moment{
+    position:relative;border-radius:8px;overflow:hidden;
+    aspect-ratio:3/4;
+    border:1px solid oklch(0.96 0.012 80 / .12);
+    background:var(--ink);
+  }
+  .moment img{
     width:100%;height:100%;object-fit:cover;display:block;
     transform:scale(1.05);
-    transition:transform 1.6s cubic-bezier(.2,.7,.2,1);
+    transition:transform 1.6s cubic-bezier(.2,.7,.2,1), filter .5s;
   }
-  .around-photo:hover img{transform:scale(1.12)}
-  .around-photo::after{
+  .moment:hover img{transform:scale(1.12);filter:brightness(1.05)}
+  .moment::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg, transparent 55%, oklch(0 0 0 / .55));
+    background:linear-gradient(180deg, oklch(0 0 0 / .15) 0%, transparent 35%, oklch(0 0 0 / .80) 100%);
     pointer-events:none;
   }
-  .around-photo figcaption{
-    position:absolute;left:22px;right:22px;bottom:18px;
-    color:var(--paper);
-    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;
-    text-shadow:0 1px 6px oklch(0 0 0 / .6);
-    z-index:1;
+  .moment-meta{
+    position:absolute;left:22px;right:22px;bottom:22px;
+    z-index:1;color:var(--paper);
   }
+  .moment-meta .when{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.20em;text-transform:uppercase;
+    color:oklch(0.96 0.012 80 / .75);
+    margin-bottom:8px;display:flex;align-items:center;gap:10px;
+  }
+  .moment-meta .when::before{
+    content:"";width:24px;height:1px;background:var(--beige-warm);display:inline-block;
+  }
+  .moment-meta .what{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:26px;line-height:1.15;
+    text-shadow:0 2px 12px oklch(0 0 0 / .6);
+  }
+  .moment-meta .what em{color:var(--beige-warm);font-style:italic}
+
   @media (max-width:880px){
-    .around-grid{grid-template-columns:1fr;gap:36px}
+    .around-intro{grid-template-columns:1fr;gap:24px}
+    .moments{grid-template-columns:1fr;gap:14px}
+    .moment{aspect-ratio:4/3}
     .around-stats{grid-template-columns:repeat(3,1fr)}
     .around-stat .num{font-size:34px}
     .around-stat{padding-right:8px}
@@ -755,6 +779,25 @@
   footer a{color:inherit;text-decoration:none;transition:color .25s}
   footer a:hover{color:var(--beige-warm)}
   .foot-brand{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;font-style:italic;color:var(--paper);margin:0 0 16px 0;line-height:1}
+  .foot-arrival{
+    margin:0 0 18px 0;
+    border-radius:6px;overflow:hidden;
+    border:1px solid color-mix(in oklab, var(--paper) 8%, transparent);
+    position:relative;
+  }
+  .foot-arrival img{
+    width:100%;height:auto;display:block;aspect-ratio:5/3;object-fit:cover;
+    transition:transform 1.4s cubic-bezier(.2,.7,.2,1), filter .5s;
+    filter:saturate(.92);
+  }
+  .foot-arrival:hover img{transform:scale(1.04);filter:saturate(1)}
+  .foot-arrival figcaption{
+    position:absolute;left:10px;bottom:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:oklch(0.96 0.012 80 / .9);
+    text-shadow:0 1px 4px oklch(0 0 0 / .8);
+  }
   .foot-brand small{display:block;font-family:'Jost',sans-serif;font-style:normal;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:oklch(0.96 0.012 80 / .55);margin-top:8px}
   .colophon{
     max-width:1320px;margin:60px auto 0;padding-top:24px;
@@ -892,8 +935,8 @@
           <figcaption>Басейните · здрач</figcaption>
         </figure>
         <figure class="g-sq">
-          <img src="assets/campfire-sunset.jpg" alt="Огън на залез" loading="lazy" />
-          <figcaption>Огънят · залез</figcaption>
+          <img src="assets/lake-campfire-sunset.jpg" alt="Огън на брега при залез" loading="lazy" />
+          <figcaption>Огън на брега · залез</figcaption>
         </figure>
         <figure class="g-sq">
           <img src="assets/badminton-sunset.jpg" alt="Игри в къмпинга на залез" loading="lazy" />
@@ -1097,33 +1140,53 @@
   <div class="bg-photo"></div>
   <div class="bg-overlay"></div>
   <div class="mist"></div>
-  <div class="fireflies" data-fireflies="8"></div>
+  <div class="fireflies" data-fireflies="14"></div>
   <div class="wrap">
-    <div class="around-grid">
-      <div class="around-copy">
+    <div class="around-intro">
+      <div>
         <div class="eyebrow reveal"><span class="tick"></span><span>Глава 04 — Около поляната</span></div>
-        <h2 class="display reveal delay-1">Язовирът на <em>пет минути</em>.</h2>
-        <p class="reveal delay-2">Каяк сутрин, разходка до горския наблюдател преди обяд, риболов, който никой не бърза. Язовир Беглика е дъга от тих смърч и ясна вода — на пет минути от поляната.</p>
-        <p class="reveal delay-3">Маркирани пътеки се вият по билото и слизат до водата. Велосипеди и каяки даваме под наем на рецепцията — попитайте за прогнозата за вятъра.</p>
-        <div class="around-stats reveal delay-3">
-          <div class="around-stat">
-            <span class="num">5 мин</span>
-            <span class="lbl">пеша до язовира</span>
-          </div>
-          <div class="around-stat">
-            <span class="num">12 км</span>
-            <span class="lbl">маркирани пътеки</span>
-          </div>
-          <div class="around-stat">
-            <span class="num">1 530 м</span>
-            <span class="lbl">надм. височина</span>
-          </div>
-        </div>
+        <h2 class="display reveal delay-1">Един язовир, <em>три различни мига</em>.</h2>
       </div>
-      <figure class="around-photo reveal delay-2" style="margin:0">
+      <p class="reveal delay-2">Язовир Беглика е на пет минути пеша от рецепцията. Едни и същи дъски на пристана, но всеки час светлината е друга — и това, за което си дошъл, също.</p>
+    </div>
+
+    <div class="moments">
+      <figure class="moment reveal">
         <img src="assets/lake-kayakers.jpg" alt="Каяк по язовир Беглика" loading="lazy" />
-        <figcaption>Сутрешен каяк · язовир Беглика</figcaption>
+        <div class="moment-meta">
+          <div class="when">07:30 · сутрин</div>
+          <div class="what"><em>Каяк</em> по тихата вода</div>
+        </div>
       </figure>
+      <figure class="moment reveal delay-1">
+        <img src="assets/lake-fisherman-mist.png" alt="Риболов в златна мъгла на язовира" loading="lazy" />
+        <div class="moment-meta">
+          <div class="when">06:12 · златен час</div>
+          <div class="what"><em>Риболов</em>, който никой не бърза</div>
+        </div>
+      </figure>
+      <figure class="moment reveal delay-2">
+        <img src="assets/lake-milky-way.jpg" alt="Млечният път над язовира" loading="lazy" />
+        <div class="moment-meta">
+          <div class="when">23:47 · среднощ</div>
+          <div class="what"><em>Млечен път</em> над водата</div>
+        </div>
+      </figure>
+    </div>
+
+    <div class="around-stats reveal delay-3">
+      <div class="around-stat">
+        <span class="num">5 мин</span>
+        <span class="lbl">пеша до язовира</span>
+      </div>
+      <div class="around-stat">
+        <span class="num">12 км</span>
+        <span class="lbl">маркирани пътеки</span>
+      </div>
+      <div class="around-stat">
+        <span class="num">1 530 м</span>
+        <span class="lbl">надм. височина</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1300,6 +1363,10 @@
     </div>
     <div>
       <h4>Намерете ни</h4>
+      <figure class="foot-arrival">
+        <img src="assets/sign-arrival.jpg" alt="Пътният знак при пристигането в Camping Beglika" loading="lazy" />
+        <figcaption>Завоят преди табелата · вече сте тук</figcaption>
+      </figure>
       <ul>
         <li>Община Батак</li>
         <li>Родопи, 4580 България</li>
