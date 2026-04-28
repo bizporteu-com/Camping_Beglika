@@ -265,24 +265,64 @@
   /* shared: all content inside dark sections above fog */
   .dark-section .wrap{position:relative;z-index:1}
 
+  /* Shared Ken Burns layer for section background photos */
+  .bg-photo{
+    position:absolute;inset:-8% 0;z-index:-3;
+    background-size:cover;background-position:center;
+    animation:kenburns 30s ease-in-out infinite alternate;
+    will-change:transform;
+  }
+  @keyframes kenburns{
+    from{transform:scale(1.10) translate(0,0)}
+    to  {transform:scale(1.20) translate(-2%, -1.5%)}
+  }
+  .bg-photo.alt{animation-direction:alternate-reverse;animation-duration:36s}
+
+  /* Shared atmospheric overlay over section bg */
+  .bg-overlay{
+    position:absolute;inset:0;z-index:-2;pointer-events:none;
+  }
+
+  /* Drifting mist for dark sections (a stronger version of section-fog) */
+  .mist{
+    position:absolute;inset:-15%;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(ellipse 50% 28% at 25% 70%, oklch(0.95 0.01 80 / .14), transparent 70%),
+      radial-gradient(ellipse 45% 22% at 75% 35%, oklch(0.95 0.01 80 / .10), transparent 70%),
+      radial-gradient(ellipse 30% 14% at 50% 90%, oklch(0.95 0.01 80 / .08), transparent 70%);
+    filter:blur(14px);
+    animation:drift 38s linear infinite;
+    mix-blend-mode:screen;
+  }
+
+  /* Floating fireflies (lighter version of embers, used in non-night sections) */
+  .fireflies{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .firefly{
+    position:absolute;bottom:-10px;
+    width:2px;height:2px;border-radius:50%;
+    background:oklch(0.9 0.12 90);
+    box-shadow:0 0 6px oklch(0.85 0.14 85), 0 0 12px oklch(0.78 0.16 75 / .7);
+    opacity:0;
+    animation:rise linear infinite;
+  }
+
   /* ---------- ETHOS ---------- */
   .ethos{
-    background: oklch(0.13 0.025 160);
+    background: oklch(0.10 0.02 200);
     color: var(--paper);
     isolation: isolate;
+    overflow:hidden;
   }
-  .ethos::before{
-    content:"";position:absolute;inset:0;z-index:-2;
-    background-image:url('assets/gallery-caravans-mist.png');
-    background-size:cover;background-position:center;
-    opacity:.15;
+  .ethos .bg-photo{
+    background-image:url('assets/meadow-mist-dawn.jpg');
+    opacity:.55;
   }
-  .ethos::after{
-    content:"";position:absolute;inset:0;z-index:-1;
+  .ethos .bg-overlay{
     background:
-      linear-gradient(180deg, oklch(0.10 0.025 160 / .85) 0%, oklch(0.14 0.025 160 / .6) 40%, oklch(0.10 0.025 160 / .9) 100%);
-    pointer-events:none;
+      radial-gradient(ellipse 70% 60% at 50% 30%, oklch(0.18 0.02 220 / .4), oklch(0.10 0.02 200 / .85) 75%),
+      linear-gradient(180deg, oklch(0.10 0.02 200 / .55) 0%, oklch(0.10 0.02 200 / .35) 40%, oklch(0.08 0.018 200 / .92) 100%);
   }
+  .ethos .wrap{position:relative;z-index:1}
   .ethos .eyebrow{color:var(--beige-warm)}
   .ethos h2.display{color:var(--paper)}
   .ethos h2.display em{color:var(--beige-warm)}
@@ -371,16 +411,22 @@
 
   /* ---------- AMENITIES ---------- */
   .amenities{
-    background: var(--pine-deep);
+    background: oklch(0.13 0.03 150);
     color:var(--paper);
     isolation:isolate;
+    overflow:hidden;
   }
-  .amenities::before{
-    content:"";position:absolute;inset:0;z-index:-1;
+  .amenities .bg-photo{
+    background-image:url('assets/morning-coffee-awning.jpg');
+    background-position:center;
+    opacity:.18;
+    filter:blur(2px);
+  }
+  .amenities .bg-overlay{
     background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.45 0.04 150 / .25), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 15% 100%, oklch(0.28 0.06 140 / .4), transparent 70%);
-    pointer-events:none;
+      radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.42 0.06 150 / .35), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 15% 100%, oklch(0.26 0.07 140 / .55), transparent 70%),
+      linear-gradient(180deg, oklch(0.13 0.03 150 / .82) 0%, oklch(0.18 0.035 150 / .68) 50%, oklch(0.10 0.025 150 / .94) 100%);
   }
   .amenities .wrap{position:relative;z-index:1}
   .amenities .eyebrow{color:var(--beige-warm)}
@@ -392,11 +438,14 @@
     border:1px solid color-mix(in oklab, var(--paper) 14%, transparent);
   }
   .amenity{
-    background:var(--pine);padding:42px 32px;
-    transition:background .35s;
+    background: oklch(0.18 0.04 150 / .65);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    padding:42px 32px;
+    transition:background .35s, transform .4s;
     display:flex;flex-direction:column;gap:22px;min-height:240px;
   }
-  .amenity:hover{background:var(--pine-deep)}
+  .amenity:hover{background: oklch(0.24 0.05 150 / .80);transform:translateY(-2px)}
   .amenity .icon{width:52px;height:52px;color:var(--beige-warm);transition:transform .4s}
   .amenity:hover .icon{transform:scale(1.08)}
   .amenity h3{
@@ -421,21 +470,20 @@
 
   /* ---------- STAY (accommodations) ---------- */
   .stay{
-    background: oklch(0.11 0.02 155);
+    background: oklch(0.09 0.025 280);
     color: var(--paper);
     isolation: isolate;
+    overflow:hidden;
   }
-  .stay::before{
-    content:"";position:absolute;inset:0;z-index:-2;
-    background-image:url('assets/gallery-tent-pines.png');
-    background-size:cover;background-position:center 40%;
-    opacity:.12;
+  .stay .bg-photo{
+    background-image:url('assets/site-dusk-pools.jpg');
+    background-position:center 30%;
+    opacity:.45;
   }
-  .stay::after{
-    content:"";position:absolute;inset:0;z-index:-1;
+  .stay .bg-overlay{
     background:
-      linear-gradient(180deg, oklch(0.09 0.02 155 / .9) 0%, oklch(0.13 0.02 155 / .55) 50%, oklch(0.09 0.02 155 / .9) 100%);
-    pointer-events:none;
+      radial-gradient(ellipse 70% 50% at 50% 0%, oklch(0.30 0.08 290 / .4), transparent 65%),
+      linear-gradient(180deg, oklch(0.09 0.025 280 / .55) 0%, oklch(0.09 0.025 280 / .42) 35%, oklch(0.07 0.02 270 / .94) 100%);
   }
   .stay .wrap{position:relative;z-index:1}
   .stay .eyebrow{color:var(--beige-warm)}
@@ -457,6 +505,7 @@
     border-color: oklch(0.96 0.012 80 / .22);
   }
   .stay-card .photo{aspect-ratio:4/3}
+  .stay-card:hover .photo img{transform:scale(1.06)}
   .stay-body{padding:28px 28px 32px}
   .stay-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
   .stay-meta .tag{
@@ -475,20 +524,23 @@
 
   /* ---------- PARALLAX QUOTE ---------- */
   .quote{
-    position:relative;height:80vh;min-height:560px;
+    position:relative;height:90vh;min-height:600px;
     display:flex;align-items:center;justify-content:center;
     color:var(--paper);overflow:hidden;text-align:center;padding:0 40px;
     isolation:isolate;
   }
   .quote .bg{
-    position:absolute;inset:-15% 0;z-index:-2;
-    background-image:url('assets/gallery-pool-dusk.png');
-    background-size:cover;background-position:center;
+    position:absolute;inset:-20% 0;z-index:-2;
+    background-image:url('assets/site-dusk-pools.jpg');
+    background-size:cover;background-position:center 40%;
     will-change:transform;
+    transform:scale(1.1);
   }
   .quote .bg::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg, oklch(0 0 0 / .6) 0%, oklch(0 0 0 / .38) 40%, oklch(0 0 0 / .65) 100%);
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, oklch(0 0 0 / .25), oklch(0 0 0 / .75) 80%),
+      linear-gradient(180deg, oklch(0 0 0 / .55) 0%, oklch(0 0 0 / .35) 40%, oklch(0 0 0 / .7) 100%);
   }
   .quote blockquote{
     margin:0;max-width:24ch;
@@ -504,20 +556,20 @@
 
   /* ---------- PRICING ---------- */
   .pricing{
-    background: oklch(0.12 0.022 158);
+    background: oklch(0.10 0.022 158);
     color: var(--paper);
     isolation: isolate;
+    overflow:hidden;
   }
-  .pricing::before{
-    content:"";position:absolute;inset:0;z-index:-2;
-    background-image:url('assets/gallery-sunset-rays.png');
-    background-size:cover;background-position:center 30%;
-    opacity:.1;
+  .pricing .bg-photo{
+    background-image:url('assets/pool-sunrays.jpg');
+    background-position:center 35%;
+    opacity:.40;
   }
-  .pricing::after{
-    content:"";position:absolute;inset:0;z-index:-1;
-    background:linear-gradient(160deg, oklch(0.10 0.022 158 / .92) 0%, oklch(0.15 0.025 155 / .7) 50%, oklch(0.10 0.022 158 / .95) 100%);
-    pointer-events:none;
+  .pricing .bg-overlay{
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 25%, oklch(0.55 0.08 80 / .25), transparent 60%),
+      linear-gradient(160deg, oklch(0.09 0.02 158 / .80) 0%, oklch(0.13 0.025 155 / .55) 45%, oklch(0.07 0.02 158 / .95) 100%);
   }
   .pricing .wrap{position:relative;z-index:1}
   .pricing .eyebrow{color:var(--beige-warm)}
@@ -578,25 +630,22 @@
 
   /* ---------- BOOKING STRIP ---------- */
   .book{
-    background: oklch(0.10 0.018 155);
+    background: oklch(0.09 0.018 60);
     color:var(--paper);
-    padding:120px 40px;
+    padding:140px 40px;
     position:relative;
     isolation:isolate;
     overflow:hidden;
   }
-  .book::before{
-    content:"";position:absolute;inset:0;z-index:-2;
-    background-image:url('assets/gallery-badminton-sunset.png');
-    background-size:cover;background-position:center;
-    opacity:.08;
+  .book .bg-photo{
+    background-image:url('assets/badminton-sunset.jpg');
+    background-position:center 60%;
+    opacity:.42;
   }
-  .book::after{
-    content:"";position:absolute;inset:0;z-index:-1;
+  .book .bg-overlay{
     background:
-      radial-gradient(ellipse 60% 55% at 20% 60%, oklch(0.25 0.04 150 / .35), transparent 65%),
-      linear-gradient(180deg, oklch(0.08 0.015 155) 0%, oklch(0.12 0.02 155) 50%, oklch(0.08 0.015 155) 100%);
-    pointer-events:none;
+      radial-gradient(ellipse 60% 55% at 50% 30%, oklch(0.50 0.10 50 / .25), transparent 65%),
+      linear-gradient(180deg, oklch(0.06 0.018 60 / .55) 0%, oklch(0.06 0.018 60 / .45) 35%, oklch(0.05 0.015 60 / .95) 100%);
   }
   .book .book-wrap{position:relative;z-index:1}
   .book-wrap{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
@@ -643,6 +692,15 @@
   .reveal.delay-1{transition-delay:.08s}
   .reveal.delay-2{transition-delay:.16s}
   .reveal.delay-3{transition-delay:.24s}
+
+  /* ---------- ACCESSIBILITY ---------- */
+  @media (prefers-reduced-motion: reduce){
+    .bg-photo, .hero-bg, .fog, .ember, .firefly, .mist, .section-fog{
+      animation:none !important;
+    }
+    .reveal{transition:opacity .3s ease}
+    .quote .bg{transform:scale(1.1) !important}
+  }
 
   @media (max-width:880px){
     .nav{padding:18px 22px}
@@ -721,7 +779,10 @@
 
 <!-- ============== ETHOS ============== -->
 <section class="ethos" id="ethos">
-  <div class="section-fog"></div>
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
+  <div class="mist"></div>
+  <div class="fireflies" data-fireflies="14"></div>
   <div class="wrap ethos-grid">
     <div class="ethos-copy">
       <div class="eyebrow reveal"><span class="tick"></span><span>Глава 01 — Мястото</span></div>
@@ -733,15 +794,15 @@
     <div class="ethos-gallery reveal delay-2">
       <div class="gallery">
         <figure class="g-tall">
-          <img src="assets/gallery-pool-day.png" alt="Беглика — басейн и бар" loading="lazy" />
-          <figcaption>Басейн и бар · ден</figcaption>
+          <img src="assets/site-dusk-pools.jpg" alt="Беглика — басейните в здрач" loading="lazy" />
+          <figcaption>Басейните · здрач над билото</figcaption>
         </figure>
         <figure class="g-wide">
-          <img src="assets/gallery-caravans-mist.png" alt="Каравани в утринна мъгла" loading="lazy" />
-          <figcaption>Зона каравани · сутрешна мъгла</figcaption>
+          <img src="assets/meadow-mist-dawn.jpg" alt="Поляна в утринна мъгла" loading="lazy" />
+          <figcaption>Поляната · сутрешна мъгла</figcaption>
         </figure>
         <figure class="g-sq">
-          <img src="assets/gallery-coffee-flowers.png" alt="Кафе и полски цветя" loading="lazy" />
+          <img src="assets/morning-coffee-awning.jpg" alt="Кафе и полски цветя под тентата" loading="lazy" />
           <figcaption>Кафе на сянка</figcaption>
         </figure>
         <figure class="g-sq">
@@ -749,15 +810,15 @@
           <figcaption>Палатка · поляната</figcaption>
         </figure>
         <figure class="g-wide">
-          <img src="assets/gallery-pool-dusk.png" alt="Басейните в здрач" loading="lazy" />
-          <figcaption>Басейните · здрач</figcaption>
+          <img src="assets/pool-sunrays.jpg" alt="Басейн със слънчеви лъчи" loading="lazy" />
+          <figcaption>Басейните · обед</figcaption>
         </figure>
         <figure class="g-sq">
           <img src="assets/gallery-sunset-rays.png" alt="Залез над боровете" loading="lazy" />
           <figcaption>Залез · над билото</figcaption>
         </figure>
         <figure class="g-sq">
-          <img src="assets/gallery-badminton-sunset.png" alt="Игри в къмпинга на залез" loading="lazy" />
+          <img src="assets/badminton-sunset.jpg" alt="Игри в къмпинга на залез" loading="lazy" />
           <figcaption>Бадминтон · вечер</figcaption>
         </figure>
       </div>
@@ -767,6 +828,9 @@
 
 <!-- ============== AMENITIES ============== -->
 <section class="amenities" id="amenities">
+  <div class="bg-photo alt"></div>
+  <div class="bg-overlay"></div>
+  <div class="mist"></div>
   <div class="wrap">
     <div class="section-head">
       <div>
@@ -880,7 +944,10 @@
 
 <!-- ============== STAY ============== -->
 <section class="stay" id="stay">
-  <div class="section-fog"></div>
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
+  <div class="mist"></div>
+  <div class="fireflies" data-fireflies="10"></div>
   <div class="wrap">
     <div class="section-head">
       <div>
@@ -891,8 +958,8 @@
 
     <div class="stay-grid">
       <article class="stay-card reveal">
-        <div class="photo" style="aspect-ratio:4/3;padding:0;background:none">
-          <img src="assets/gallery-pool-day.png" alt="Частна вила с басейн" style="width:100%;height:100%;object-fit:cover;display:block" />
+        <div class="photo" style="aspect-ratio:4/3;padding:0;background:none;overflow:hidden">
+          <img src="assets/pool-sunrays.jpg" alt="Частна вила с басейн" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)" />
         </div>
         <div class="stay-body">
           <div class="stay-meta">
@@ -909,7 +976,9 @@
       </article>
 
       <article class="stay-card reveal delay-1">
-        <div class="photo warm"><span class="cap">снимка · бунгало в смърчова гора · 4:3</span></div>
+        <div class="photo" style="aspect-ratio:4/3;padding:0;background:none;overflow:hidden">
+          <img src="assets/site-dusk-pools.jpg" alt="Бунгало в смърчова гора" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)" />
+        </div>
         <div class="stay-body">
           <div class="stay-meta">
             <span class="tag">Бунгало</span>
@@ -925,7 +994,9 @@
       </article>
 
       <article class="stay-card reveal delay-1">
-        <div class="photo"><span class="cap">снимка · място за каравана с електричество · 4:3</span></div>
+        <div class="photo" style="aspect-ratio:4/3;padding:0;background:none;overflow:hidden">
+          <img src="assets/morning-coffee-awning.jpg" alt="Място за каравана" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)" />
+        </div>
         <div class="stay-body">
           <div class="stay-meta">
             <span class="tag">Палатка</span>
@@ -952,7 +1023,9 @@
 
 <!-- ============== PRICING ============== -->
 <section class="pricing" id="pricing">
-  <div class="section-fog"></div>
+  <div class="bg-photo alt"></div>
+  <div class="bg-overlay"></div>
+  <div class="mist"></div>
   <div class="wrap">
     <div class="section-head">
       <div>
@@ -1056,6 +1129,10 @@
 
 <!-- ============== BOOKING ============== -->
 <section class="book" id="book">
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
+  <div class="mist"></div>
+  <div class="fireflies" data-fireflies="12"></div>
   <div class="book-wrap">
     <div>
       <div class="eyebrow reveal" style="color:var(--beige-warm)"><span class="tick"></span><span>Глава 05 — Резервация</span></div>
@@ -1133,19 +1210,26 @@
 <script>
   // -------- NAV solid on scroll --------
   const nav = document.getElementById('nav');
+
+  let scrollRaf = 0;
   const onScroll = () => {
     if (window.scrollY > 80) nav.classList.add('solid');
     else nav.classList.remove('solid');
-    // parallax quote bg
-    const q = document.getElementById('parallax-quote');
-    const bg = document.getElementById('quoteBg');
-    if (q && bg) {
-      const r = q.getBoundingClientRect();
+
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => {
+      scrollRaf = 0;
       const vh = window.innerHeight;
-      const progress = (vh - r.top) / (vh + r.height); // 0..1ish
-      const y = (progress - 0.5) * 80;
-      bg.style.transform = `translateY(${y}px)`;
-    }
+      // Quote section parallax (kept simple — direct transform)
+      const q = document.getElementById('parallax-quote');
+      const bg = document.getElementById('quoteBg');
+      if (q && bg) {
+        const r = q.getBoundingClientRect();
+        const progress = (vh - r.top) / (vh + r.height);
+        const y = (progress - 0.5) * 100;
+        bg.style.transform = `translateY(${y}px) scale(1.1)`;
+      }
+    });
   };
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
@@ -1191,6 +1275,27 @@
     e.style.setProperty('--dx', dx + 'px');
     emberRoot.appendChild(e);
   }
+
+  // -------- Fireflies (slower, paler, drift more) --------
+  document.querySelectorAll('.fireflies').forEach((root) => {
+    const count = parseInt(root.dataset.fireflies || '12', 10);
+    for (let i = 0; i < count; i++) {
+      const e = document.createElement('span');
+      e.className = 'firefly';
+      const left = Math.random() * 100;
+      const dur = 14 + Math.random() * 18;
+      const delay = -Math.random() * dur;
+      const dx = (Math.random() - 0.5) * 280;
+      const size = 1.5 + Math.random() * 2.2;
+      e.style.left = left + '%';
+      e.style.width = size + 'px';
+      e.style.height = size + 'px';
+      e.style.animationDuration = dur + 's';
+      e.style.animationDelay = delay + 's';
+      e.style.setProperty('--dx', dx + 'px');
+      root.appendChild(e);
+    }
+  });
 </script>
 
 <!-- ============== TWEAKS ============== -->
