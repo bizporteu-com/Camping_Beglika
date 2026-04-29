@@ -28,10 +28,104 @@
   body{
     font-family:'Jost',system-ui,sans-serif;
     font-weight:400;
-    color:var(--ink);
-    background:var(--paper);
+    color:var(--paper);
+    background: oklch(0.08 0.02 220);
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+  }
+
+  /* ---------- SITE BACKGROUND (universal) ---------- */
+  /* One fixed photographic backdrop that crossfades 3 cinematic moments
+     as you scroll. All sections are transparent and slide over this. */
+  .site-bg{
+    position:fixed;inset:0;z-index:-10;pointer-events:none;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .site-bg-layer{
+    position:absolute;inset:-3%;
+    background-size:cover;background-position:center;
+    opacity:0;
+    transform:scale(1.06);
+    will-change:opacity, transform;
+    transition:opacity 1.6s ease;
+    animation:bgKenBurns 90s ease-in-out infinite alternate;
+  }
+  .site-bg-layer.is-active{opacity:1}
+  .site-bg-layer[data-layer="0"]{animation-direction:alternate;animation-duration:80s}
+  .site-bg-layer[data-layer="1"]{animation-direction:alternate-reverse;animation-duration:96s}
+  .site-bg-layer[data-layer="2"]{animation-direction:alternate;animation-duration:110s}
+  @keyframes bgKenBurns{
+    from{transform:scale(1.06) translate(0,0)}
+    to  {transform:scale(1.16) translate(-1.8%, -1.4%)}
+  }
+  .site-bg-tint{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 50%,
+        oklch(0.08 0.02 220 / .25),
+        oklch(0.06 0.02 220 / .55) 80%),
+      linear-gradient(180deg,
+        oklch(0 0 0 / .25) 0%,
+        oklch(0 0 0 / .35) 50%,
+        oklch(0 0 0 / .55) 100%);
+  }
+  .site-bg-fog{
+    position:absolute;inset:-10%;
+    background:
+      radial-gradient(ellipse 55% 30% at 25% 70%, oklch(0.95 0.01 80 / .12), transparent 70%),
+      radial-gradient(ellipse 50% 28% at 75% 30%, oklch(0.95 0.01 80 / .08), transparent 70%);
+    filter:blur(20px);
+    animation:drift 50s linear infinite;
+    mix-blend-mode:screen;
+  }
+  .site-bg-embers{
+    position:absolute;inset:0;overflow:hidden;
+  }
+
+  /* Make every section transparent — let site-bg show through */
+  .ethos, .amenities, .stay, .around, .pricing, .book{
+    background:transparent !important;
+    isolation:auto;
+  }
+  /* Hide per-section bg-photo / bg-overlay / mist / fireflies layers */
+  section .bg-photo,
+  section .bg-overlay,
+  section .mist,
+  section .section-fog,
+  section .fireflies{
+    display:none !important;
+  }
+  /* Strip section ::before / ::after photo layers */
+  .ethos::before, .ethos::after,
+  .amenities::before, .amenities::after,
+  .stay::before, .stay::after,
+  .around::before, .around::after,
+  .pricing::before, .pricing::after,
+  .book::before, .book::after{
+    display:none !important;
+  }
+
+  /* Section content floats on a frosted-glass panel hovering over the bg */
+  .ethos > .wrap,
+  .amenities > .wrap,
+  .stay > .wrap,
+  .around > .wrap,
+  .pricing > .wrap,
+  .book > .book-wrap{
+    background: oklch(0.07 0.02 220 / .55);
+    backdrop-filter: blur(18px) saturate(1.05);
+    -webkit-backdrop-filter: blur(18px) saturate(1.05);
+    border-radius: 18px;
+    padding: 90px 64px;
+    border: 1px solid oklch(0.96 0.012 80 / .08);
+    box-shadow: 0 40px 100px -30px oklch(0 0 0 / .55);
+    position:relative;
+    z-index:1;
+  }
+  /* Less section padding now that panels have their own */
+  section:not(.hero){
+    padding: 64px 40px;
   }
   ::selection{background:var(--pine);color:var(--paper)}
 
@@ -186,19 +280,8 @@
     .hero-lede{font-size:16px;margin-bottom:28px !important}
     .hero-meta{display:none}
   }
-  /* Hero photograph with slow Ken Burns */
-  .hero-bg{
-    position:absolute;inset:0;z-index:-3;
-    background-image:url('assets/hero-rhodopes.png');
-    background-size:cover;
-    background-position:center 55%;
-    transform:scale(1.08);
-    animation:breathe 22s ease-in-out infinite alternate;
-  }
-  @keyframes breathe{
-    from{transform:scale(1.08) translate(0,0)}
-    to  {transform:scale(1.16) translate(-1.5%, -1.5%)}
-  }
+  /* Hero shares the site-wide bg now — its own bg layer is gone */
+  .hero-bg{display:none}
 
   /* Striped placeholder behind, suggests video frame */
   .hero-frame{
@@ -1266,6 +1349,22 @@
     .mist{display:none}
     .section-fog{display:none}
     .bg-photo{animation-duration:48s}
+
+    /* Mobile section panels: tighter padding, lighter backdrop */
+    .ethos > .wrap,
+    .amenities > .wrap,
+    .stay > .wrap,
+    .around > .wrap,
+    .pricing > .wrap,
+    .book > .book-wrap{
+      padding: 56px 22px;
+      border-radius: 14px;
+      backdrop-filter: blur(12px) saturate(1.03);
+      -webkit-backdrop-filter: blur(12px) saturate(1.03);
+      background: oklch(0.07 0.02 220 / .68);
+    }
+    section:not(.hero){padding: 32px 14px}
+    .site-bg-fog{display:none}
   }
 
   /* Very small phones — single column scenes, tighter type */
@@ -1281,6 +1380,16 @@
 </style>
 </head>
 <body>
+
+<!-- ============== SITE BACKGROUND (fixed, crossfades on scroll) ============== -->
+<div class="site-bg" aria-hidden="true">
+  <div class="site-bg-layer is-active" data-layer="0" style="background-image:url('assets/hero-rhodopes.png')"></div>
+  <div class="site-bg-layer" data-layer="1" style="background-image:url('assets/forest-sun-rays.jpg')"></div>
+  <div class="site-bg-layer" data-layer="2" style="background-image:url('assets/campfire-sunset.jpg')"></div>
+  <div class="site-bg-tint"></div>
+  <div class="site-bg-fog"></div>
+  <div class="site-bg-embers" id="site-embers"></div>
+</div>
 
 <!-- ============== NAV ============== -->
 <nav class="nav" id="nav">
@@ -1925,6 +2034,30 @@
 </footer>
 
 <script>
+  // -------- Site bg crossfade based on scroll progress --------
+  const bgLayers = Array.from(document.querySelectorAll('.site-bg-layer'));
+  function smoothstep(a, b, x){
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+  function updateSiteBg(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? window.scrollY / max : 0;
+    // Layer 1 (hero photo): full from start, fades out 0.30 → 0.45
+    // Layer 2 (forest sun rays): fades in 0.30 → 0.45, holds, fades out 0.65 → 0.80
+    // Layer 3 (campfire sunset): fades in 0.65 → 0.80
+    const o1 = 1 - smoothstep(0.30, 0.45, p);
+    const o2 = smoothstep(0.30, 0.45, p) * (1 - smoothstep(0.65, 0.80, p));
+    const o3 = smoothstep(0.65, 0.80, p);
+    if (bgLayers[0]) bgLayers[0].style.opacity = o1.toFixed(3);
+    if (bgLayers[1]) bgLayers[1].style.opacity = o2.toFixed(3);
+    if (bgLayers[2]) bgLayers[2].style.opacity = o3.toFixed(3);
+  }
+  // Run once + on scroll/resize
+  updateSiteBg();
+  window.addEventListener('scroll', updateSiteBg, {passive: true});
+  window.addEventListener('resize', updateSiteBg);
+
   // -------- NAV solid on scroll --------
   const nav = document.getElementById('nav');
 
@@ -2027,7 +2160,7 @@
   // Refresh every 15 minutes
   setInterval(fetchWeather, 15 * 60 * 1000);
 
-  // -------- Embers --------
+  // -------- Embers (hero + page-level ambient) --------
   const isMobile = window.matchMedia('(max-width:880px)').matches;
   const emberRoot = document.getElementById('embers');
   const N = isMobile ? 12 : 26;
@@ -2046,6 +2179,28 @@
     e.style.animationDelay = delay + 's';
     e.style.setProperty('--dx', dx + 'px');
     emberRoot.appendChild(e);
+  }
+
+  // -------- Page-level ambient embers (drift across all sections behind content) --------
+  const siteEmbers = document.getElementById('site-embers');
+  if (siteEmbers) {
+    const ambientCount = isMobile ? 6 : 14;
+    for (let i = 0; i < ambientCount; i++) {
+      const e = document.createElement('span');
+      e.className = 'firefly';
+      const left = Math.random() * 100;
+      const dur = 22 + Math.random() * 28;
+      const delay = -Math.random() * dur;
+      const dx = (Math.random() - 0.5) * 320;
+      const size = 1.5 + Math.random() * 2;
+      e.style.left = left + '%';
+      e.style.width = size + 'px';
+      e.style.height = size + 'px';
+      e.style.animationDuration = dur + 's';
+      e.style.animationDelay = delay + 's';
+      e.style.setProperty('--dx', dx + 'px');
+      siteEmbers.appendChild(e);
+    }
   }
 
   // -------- Activity scenes: cursor-tilt parallax + staggered entrance + click-to-fullscreen --------
