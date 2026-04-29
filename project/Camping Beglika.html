@@ -96,6 +96,83 @@
   .nav.solid .nav-cta:hover span{color:var(--paper)}
   .nav-cta span{transition:color .25s}
 
+  /* Hamburger toggle (hidden on desktop) */
+  .nav-toggle{
+    display:none;
+    width:46px;height:46px;
+    border:1px solid currentColor;border-radius:999px;
+    background: oklch(0 0 0 / .18);color:inherit;cursor:pointer;
+    align-items:center;justify-content:center;
+    flex-direction:column;gap:4px;
+    transition:background .25s, border-color .25s, transform .35s ease;
+  }
+  .nav.solid .nav-toggle{background:transparent}
+  .nav-toggle-bar{
+    display:block;width:18px;height:1.5px;background:currentColor;border-radius:2px;
+    transition:transform .35s cubic-bezier(.5,0,.3,1), opacity .25s ease;
+  }
+  body.menu-open .nav-toggle{background: oklch(0.96 0.012 80 / .14);border-color:var(--paper);color:var(--paper)}
+  body.menu-open .nav-toggle .nav-toggle-bar:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+  body.menu-open .nav-toggle .nav-toggle-bar:nth-child(2){opacity:0;transform:scaleX(0)}
+  body.menu-open .nav-toggle .nav-toggle-bar:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+
+  /* Full-screen mobile menu */
+  .nav-overlay{
+    position:fixed;inset:0;z-index:60;
+    background: oklch(0.07 0.02 200 / .95);
+    backdrop-filter:blur(22px) saturate(1.05);
+    -webkit-backdrop-filter:blur(22px) saturate(1.05);
+    color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;
+    transition:opacity .45s ease;
+  }
+  .nav-overlay.open{opacity:1;pointer-events:auto}
+  .nav-overlay-inner{
+    display:flex;flex-direction:column;align-items:flex-start;
+    gap:6px;padding:0 32px;width:100%;max-width:420px;
+  }
+  .nav-overlay-eyebrow{
+    display:flex;align-items:center;gap:14px;
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;font-weight:500;
+    color:var(--beige-warm);
+    margin-bottom:36px;
+    opacity:0;transform:translateY(-8px);
+    transition:opacity .5s ease .15s, transform .5s cubic-bezier(.2,.7,.2,1) .15s;
+  }
+  .nav-overlay-eyebrow .tick{width:36px;height:1px;background:currentColor;opacity:.7}
+  .nav-overlay.open .nav-overlay-eyebrow{opacity:1;transform:none}
+  .nav-overlay a{
+    color:var(--paper);text-decoration:none;
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:38px;line-height:1.25;letter-spacing:-.005em;
+    padding:6px 0;
+    position:relative;
+    opacity:0;transform:translateY(12px);
+    transition:opacity .5s ease, transform .55s cubic-bezier(.2,.7,.2,1), color .25s;
+  }
+  .nav-overlay a:hover{color:var(--beige-warm)}
+  .nav-overlay.open a{opacity:1;transform:none}
+  .nav-overlay.open a:nth-child(2){transition-delay:.20s}
+  .nav-overlay.open a:nth-child(3){transition-delay:.27s}
+  .nav-overlay.open a:nth-child(4){transition-delay:.34s}
+  .nav-overlay.open a:nth-child(5){transition-delay:.41s}
+  .nav-overlay.open a:nth-child(6){transition-delay:.48s}
+  .nav-overlay.open a:nth-child(7){transition-delay:.55s}
+  .nav-overlay.open a:nth-child(8){transition-delay:.62s}
+  .nav-overlay-cta{
+    margin-top:32px;
+    font-style:normal !important;
+    font-family:'Jost',sans-serif !important;
+    font-size:13px !important;
+    letter-spacing:.18em;text-transform:uppercase;
+    border:1px solid var(--paper);border-radius:999px;
+    padding:14px 28px !important;
+    background: oklch(0.96 0.012 80 / .08);
+  }
+  .nav-overlay-cta:hover{background: var(--paper);color:var(--ink) !important}
+  body.menu-open{overflow:hidden}
+
   /* ---------- HERO ---------- */
   .hero{
     position:relative;height:100vh;min-height:620px;
@@ -905,7 +982,7 @@
     .lightbox-img{aspect-ratio:5/4}
     .lightbox-title{font-size:34px}
     .lightbox-text{font-size:16px}
-    .lightbox-close{top:14px;right:14px;width:42px;height:42px}
+    .lightbox-close{top:14px;right:14px;width:48px;height:48px}
   }
 
   @media (max-width:1100px){
@@ -1039,8 +1116,11 @@
   .field .val{
     font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--paper);
     background:transparent;border:0;border-bottom:1px solid color-mix(in oklab, var(--paper) 22%, transparent);
-    padding:6px 0;outline:none;font-style:italic;
+    padding:10px 0;outline:none;font-style:italic;
+    min-height:46px;
+    transition:border-color .2s ease;
   }
+  .field .val:focus{border-bottom-color:var(--beige-warm)}
   .field .val::placeholder{color:oklch(0.96 0.012 80 / .35)}
   .booker .btn-primary{justify-content:center;width:100%}
   .booker .btn-primary:hover{transform:none;background:var(--beige)}
@@ -1104,25 +1184,99 @@
   }
 
   @media (max-width:880px){
-    .nav{padding:18px 22px}
+    .nav{padding:14px 18px;gap:8px}
     .nav-links{display:none}
-    section{padding:90px 22px}
-    .hero-inner{padding:0 22px 80px}
-    .hero-meta{left:22px;right:22px;display:none}
+    .nav-toggle{display:flex}
+    .brand{font-size:11px;letter-spacing:.12em;gap:10px}
+    .brand-mark{width:28px;height:28px;font-size:14px}
+    .nav-cta{padding:9px 14px;font-size:11px;letter-spacing:.10em}
+
+    section{padding:80px 22px}
+    .section-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:48px}
+    .section-head p{max-width:none !important}
+
+    .hero{min-height:100svh}
+    .hero h1{font-size:clamp(36px, 8.8vw, 64px) !important;line-height:1.06;margin-bottom:22px}
+    .hero-lede{font-size:15.5px !important;line-height:1.6;margin-bottom:30px !important;max-width:32ch}
+    .hero-eyebrow{font-size:10px;letter-spacing:.22em;margin-bottom:22px}
+    .hero-actions{gap:12px;width:100%}
+    .hero-actions .btn{flex:1 1 auto;justify-content:center;padding:16px 18px;font-size:12px;letter-spacing:.12em}
+    .hero-inner{padding:0 22px 96px}
+    .hero-meta{display:none}
+    .scroll-hint{bottom:18px;font-size:9px}
+    .scroll-hint .line{height:36px}
+
     .ethos-grid{grid-template-columns:1fr;gap:40px}
-    .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:120px}
+    .ethos-copy p{font-size:17px;line-height:1.6}
+    .ethos-copy .pull{font-size:24px;padding-left:18px;margin:24px 0}
+    .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:110px}
     .g-tall{grid-row:span 2;grid-column:span 2}
     .g-wide{grid-row:span 1;grid-column:span 2}
     .g-sq{grid-row:span 1;grid-column:span 1}
     .g-mid{grid-row:span 1;grid-column:span 2}
+
     .amenity-grid{grid-template-columns:repeat(2,1fr)}
-    .stay-grid{grid-template-columns:1fr;gap:24px}
-    .journal-grid,.pricing-grid{grid-template-columns:1fr;gap:36px}
+    .amenity{padding:30px 22px;min-height:auto;gap:16px}
+    .amenity h3{font-size:22px}
+    .amenity p{font-size:13px}
+    .amenity .icon{width:42px;height:42px}
+
+    .stay-grid{grid-template-columns:1fr;gap:18px}
+    .stay-body{padding:22px 22px 26px}
+    .stay-card h3{font-size:26px}
+    .stay-card p{font-size:13.5px}
+
+    .around-grid{grid-template-columns:1fr;gap:32px}
+    .around-photo{aspect-ratio:4/3}
+    .around-stats{margin-top:28px}
+    .around-stat{padding:18px 6px}
+    .around-stat .num{font-size:30px}
+    .around-stat .lbl{font-size:10px;letter-spacing:.14em}
+
+    .scenes-head{margin:56px 0 24px}
+    .scenes-head h3{font-size:26px}
+
+    .pricing-grid{grid-template-columns:1fr;gap:36px}
+    .price-row .name{font-size:22px}
+    .price-row .desc{font-size:12.5px}
+    .price-row .amt{font-size:21px;min-width:84px}
+    .discount-banner{padding:18px 22px !important;gap:16px}
+    .discount-banner .badge{font-size:32px;padding:0 10px}
+    .discount-banner .copy{font-size:17px}
+    .price-aside{padding:28px;position:static}
+
+    .book{padding:96px 22px}
     .book-wrap{grid-template-columns:1fr;gap:40px}
-    .foot-wrap{grid-template-columns:1fr 1fr;gap:32px}
-    .booker{grid-template-columns:1fr}
-    .price-aside{backdrop-filter:none;-webkit-backdrop-filter:none}
-    .stay-card{backdrop-filter:none;-webkit-backdrop-filter:none}
+    .book h2{font-size:clamp(34px, 8vw, 52px) !important;margin:14px 0 18px}
+    .book p{font-size:15px}
+    .booker{grid-template-columns:1fr;padding:22px;gap:14px}
+
+    footer{padding:60px 22px 32px}
+    .foot-wrap{grid-template-columns:1fr 1fr;gap:28px}
+    .foot-brand{font-size:34px}
+    footer h4{font-size:10px}
+    footer ul{font-size:13px}
+    .colophon{flex-direction:column;gap:10px;text-align:center}
+
+    /* Performance: drop GPU-heavy effects on mobile */
+    .price-aside,.stay-card,.amenity,.discount-banner,
+    .nav.solid,.lightbox,.hero-meta .group,.booker{
+      backdrop-filter:none;-webkit-backdrop-filter:none;
+    }
+    .mist{display:none}
+    .section-fog{display:none}
+    .bg-photo{animation-duration:48s}
+  }
+
+  /* Very small phones — single column scenes, tighter type */
+  @media (max-width:480px){
+    .scenes{grid-template-columns:1fr;gap:12px}
+    .scene{aspect-ratio:5/4}
+    .scene-title{font-size:22px}
+    .hero h1{font-size:clamp(34px, 9.4vw, 56px) !important}
+    .ethos-copy .pull{font-size:22px}
+    h2.display{font-size:clamp(32px, 8.4vw, 52px) !important}
+    .foot-wrap{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -1143,7 +1297,26 @@
     <a href="#book">Контакт</a>
   </div>
   <button class="nav-cta"><span>Резервирай</span></button>
+  <button class="nav-toggle" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+  </button>
 </nav>
+
+<!-- ============== MOBILE MENU ============== -->
+<div class="nav-overlay" id="mobile-menu" aria-hidden="true">
+  <div class="nav-overlay-inner">
+    <div class="nav-overlay-eyebrow"><span class="tick"></span><span>Camping Beglika</span></div>
+    <a href="#ethos">Мястото</a>
+    <a href="#stay">Настаняване</a>
+    <a href="#amenities">Удобства</a>
+    <a href="#around">Около</a>
+    <a href="#pricing">Цени</a>
+    <a href="#book">Контакт</a>
+    <a href="#book" class="nav-overlay-cta">Резервирай</a>
+  </div>
+</div>
 
 <!-- ============== HERO ============== -->
 <header class="hero">
@@ -1755,6 +1928,23 @@
   // -------- NAV solid on scroll --------
   const nav = document.getElementById('nav');
 
+  // -------- Mobile hamburger menu --------
+  const navToggle  = document.querySelector('.nav-toggle');
+  const navOverlay = document.getElementById('mobile-menu');
+  function setMenu(open){
+    document.body.classList.toggle('menu-open', open);
+    navOverlay.classList.toggle('open', open);
+    navOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  if (navToggle && navOverlay) {
+    navToggle.addEventListener('click', () => setMenu(!navOverlay.classList.contains('open')));
+    navOverlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navOverlay.classList.contains('open')) setMenu(false);
+    });
+  }
+
   let scrollRaf = 0;
   const onScroll = () => {
     if (window.scrollY > 80) nav.classList.add('solid');
@@ -1838,8 +2028,9 @@
   setInterval(fetchWeather, 15 * 60 * 1000);
 
   // -------- Embers --------
+  const isMobile = window.matchMedia('(max-width:880px)').matches;
   const emberRoot = document.getElementById('embers');
-  const N = 26;
+  const N = isMobile ? 12 : 26;
   for (let i = 0; i < N; i++) {
     const e = document.createElement('span');
     e.className = 'ember';
@@ -1982,7 +2173,8 @@
 
   // -------- Fireflies (slower, paler, drift more) --------
   document.querySelectorAll('.fireflies').forEach((root) => {
-    const count = parseInt(root.dataset.fireflies || '12', 10);
+    let count = parseInt(root.dataset.fireflies || '12', 10);
+    if (isMobile) count = Math.max(4, Math.floor(count * 0.5));
     for (let i = 0; i < count; i++) {
       const e = document.createElement('span');
       e.className = 'firefly';
