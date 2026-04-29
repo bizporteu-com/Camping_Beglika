@@ -599,6 +599,99 @@
     .around-stat{padding-right:8px}
   }
 
+  /* Activity scenes — immersive vignettes */
+  .scenes-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:40px;
+    margin:96px 0 32px;
+  }
+  .scenes-head .eyebrow{color:var(--beige-warm)}
+  .scenes-head h3{
+    font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(28px, 3.4vw, 44px);
+    line-height:1.1;letter-spacing:-.005em;margin:8px 0 0 0;color:var(--paper);
+    max-width:18ch;
+  }
+  .scenes-head h3 em{font-style:italic;color:var(--beige-warm)}
+  .scenes-head p{
+    max-width:36ch;font-size:15px;line-height:1.6;
+    color:oklch(0.96 0.012 80 / .72);font-weight:300;margin:0;
+  }
+  .scenes{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:14px;
+  }
+  .scene{
+    position:relative;border-radius:8px;overflow:hidden;margin:0;
+    aspect-ratio:3/4;
+    border:1px solid oklch(0.96 0.012 80 / .12);
+    background: oklch(0.18 0.025 220);
+    isolation:isolate;
+  }
+  .scene img{
+    position:absolute;inset:0;
+    width:100%;height:100%;object-fit:cover;display:block;
+    transform:scale(1.08);
+    animation:kenburns 22s ease-in-out infinite alternate;
+    transition:transform 1.2s cubic-bezier(.2,.7,.2,1), filter .5s;
+    z-index:0;
+  }
+  .scene:hover img{filter:brightness(1.08)}
+  .scene::after{
+    content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg, oklch(0 0 0 / .35) 0%, oklch(0 0 0 / .05) 35%, oklch(0 0 0 / .85) 100%);
+    pointer-events:none;
+  }
+  .scene-icon{
+    position:absolute;top:18px;left:18px;z-index:2;
+    width:34px;height:34px;color:var(--beige-warm);
+  }
+  .scene-icon path,.scene-icon circle,.scene-icon line,.scene-icon polyline,.scene-icon rect{
+    fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:200;stroke-dashoffset:200;
+    transition:stroke-dashoffset 1.4s cubic-bezier(.6,0,.3,1);
+  }
+  .scene.in .scene-icon path,
+  .scene.in .scene-icon circle,
+  .scene.in .scene-icon line,
+  .scene.in .scene-icon polyline,
+  .scene.in .scene-icon rect{stroke-dashoffset:0}
+  .scene-meta{
+    position:absolute;left:20px;right:20px;bottom:22px;z-index:2;
+    color:var(--paper);
+  }
+  .scene-when{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:.20em;text-transform:uppercase;
+    color:oklch(0.96 0.012 80 / .75);
+    margin-bottom:10px;display:flex;align-items:center;gap:10px;
+  }
+  .scene-when::before{
+    content:"";width:20px;height:1px;background:var(--beige-warm);display:inline-block;flex-shrink:0;
+  }
+  .scene-title{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:24px;line-height:1.1;
+    margin:0 0 8px 0;
+    text-shadow:0 2px 12px oklch(0 0 0 / .7);
+    color:var(--paper);
+  }
+  .scene-text{
+    font-size:13px;line-height:1.55;
+    color:oklch(0.96 0.012 80 / .78);font-weight:300;margin:0;
+    text-shadow:0 1px 6px oklch(0 0 0 / .8);
+  }
+
+  @media (max-width:1100px){
+    .scenes{grid-template-columns:repeat(3, 1fr)}
+    .scene:nth-child(4){grid-column:span 1}
+    .scene:nth-child(5){grid-column:span 1}
+  }
+  @media (max-width:680px){
+    .scenes{grid-template-columns:1fr 1fr}
+    .scene{aspect-ratio:4/5}
+    .scenes-head{flex-direction:column;align-items:flex-start;gap:18px;margin:64px 0 28px}
+  }
+
   /* ---------- PRICING ---------- */
   .pricing{
     background: oklch(0.10 0.022 158);
@@ -1127,6 +1220,97 @@
       <figure class="around-photo reveal delay-2" style="margin:0">
         <img src="assets/lake-kayakers.jpg" alt="Каяк по язовир Беглика" loading="lazy" />
         <figcaption>Сутрешен каяк · язовир Беглика</figcaption>
+      </figure>
+    </div>
+
+    <div class="scenes-head">
+      <div>
+        <div class="eyebrow reveal"><span class="tick"></span><span>Какво да правиш</span></div>
+        <h3 class="reveal delay-1">Пет неща, които <em>вече правиш</em>.</h3>
+      </div>
+      <p class="reveal delay-2">Не идваш просто да отседнеш — идваш да продължиш един ден, който вече е започнал тук.</p>
+    </div>
+
+    <div class="scenes">
+      <figure class="scene reveal">
+        <img src="assets/meadow-mist-dawn.jpg" alt="Утринна разходка по пътеката" loading="lazy" />
+        <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <polyline points="6,38 16,22 24,30 32,16 42,32"/>
+          <path d="M6 42 L42 42"/>
+          <circle cx="32" cy="11" r="2"/>
+        </svg>
+        <div class="scene-meta">
+          <div class="scene-when">06:24 · Хайкинг</div>
+          <div class="scene-title">Пътеката</div>
+          <p class="scene-text">Тръгваш преди слънцето. Боровете още спят, мъхът хрущи под краката, въздухът щипе бузите.</p>
+        </div>
+      </figure>
+
+      <figure class="scene reveal delay-1">
+        <img src="assets/lake-kayakers.jpg" alt="Каяк по язовира" loading="lazy" />
+        <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M8 24 Q24 16 40 24 Q24 32 8 24 Z"/>
+          <path d="M24 24 L24 6"/>
+          <path d="M24 24 L24 42"/>
+          <path d="M20 6 L28 6"/>
+          <path d="M20 42 L28 42"/>
+        </svg>
+        <div class="scene-meta">
+          <div class="scene-when">07:30 · Каяк</div>
+          <div class="scene-title">Греблото</div>
+          <p class="scene-text">Греблото потъва без шум. Водата е огледало — отразява двата бряга и теб самия.</p>
+        </div>
+      </figure>
+
+      <figure class="scene reveal delay-2">
+        <img src="assets/lake-fisherman-mist.png" alt="Риболов на пристана в златна мъгла" loading="lazy" />
+        <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M10 8 L36 32"/>
+          <path d="M36 32 Q40 36 36 40 Q32 36 36 32"/>
+          <path d="M10 8 L8 14"/>
+          <path d="M30 26 L24 32"/>
+          <path d="M6 42 L42 42"/>
+        </svg>
+        <div class="scene-meta">
+          <div class="scene-when">06:12 · Риболов</div>
+          <div class="scene-title">Поплавъкът</div>
+          <p class="scene-text">Сядаш на пристана с термос горещо кафе. Поплавъкът танцува тихо. Часовете тук не текат.</p>
+        </div>
+      </figure>
+
+      <figure class="scene reveal delay-3">
+        <img src="assets/forest-sun-rays.jpg" alt="Велосипеден маршрут през боровата гора" loading="lazy" />
+        <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="13" cy="34" r="7"/>
+          <circle cx="35" cy="34" r="7"/>
+          <path d="M13 34 L22 20 L35 34"/>
+          <path d="M22 20 L28 20"/>
+          <path d="M28 20 L33 14"/>
+          <path d="M30 14 L36 14"/>
+        </svg>
+        <div class="scene-meta">
+          <div class="scene-when">10:18 · Велосипед</div>
+          <div class="scene-title">Горският път</div>
+          <p class="scene-text">Гумите хрущят по горския път. Сянка, светлина, сянка между смърчовете. Спираш само за вода.</p>
+        </div>
+      </figure>
+
+      <figure class="scene reveal delay-3">
+        <img src="assets/gallery-tent-pines.png" alt="Наблюдение на птици в гората" loading="lazy" />
+        <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="14" cy="26" r="6"/>
+          <circle cx="34" cy="26" r="6"/>
+          <path d="M20 26 L28 26"/>
+          <path d="M11 18 L17 18"/>
+          <path d="M31 18 L37 18"/>
+          <path d="M14 22 L14 18"/>
+          <path d="M34 22 L34 18"/>
+        </svg>
+        <div class="scene-meta">
+          <div class="scene-when">05:40 · Птици</div>
+          <div class="scene-title">Глухарят</div>
+          <p class="scene-text">Глухар по тока. Кълвачи и синигери в короните. Биноклът виси на врата ти, въздухът мирише на смола.</p>
+        </div>
       </figure>
     </div>
   </div>
