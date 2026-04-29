@@ -619,6 +619,7 @@
     display:grid;
     grid-template-columns:repeat(5, 1fr);
     gap:14px;
+    perspective:1200px;
   }
   .scene{
     position:relative;border-radius:8px;overflow:hidden;margin:0;
@@ -626,25 +627,60 @@
     border:1px solid oklch(0.96 0.012 80 / .12);
     background: oklch(0.18 0.025 220);
     isolation:isolate;
+    transform-style:preserve-3d;
+    transform: scale(1) rotateX(0deg) rotateY(0deg);
+    opacity:0;
+    transition:
+      opacity .9s ease,
+      transform .55s cubic-bezier(.2,.7,.2,1),
+      box-shadow .55s ease,
+      border-color .35s ease,
+      z-index 0s linear .55s;
+    will-change:transform, opacity;
+  }
+  .scene.in{opacity:1}
+  .scene:hover{
+    transform: scale(1.15) translate3d(0,0,0) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+    z-index:5;
+    box-shadow:
+      0 30px 60px -20px oklch(0 0 0 / .65),
+      0 12px 28px -8px oklch(0 0 0 / .35);
+    border-color: oklch(0.96 0.012 80 / .28);
+    transition:
+      transform .55s cubic-bezier(.2,.7,.2,1),
+      box-shadow .55s ease,
+      border-color .35s ease,
+      z-index 0s linear 0s;
   }
   .scene img{
     position:absolute;inset:0;
     width:100%;height:100%;object-fit:cover;display:block;
-    transform:scale(1.08);
+    transform:scale(1.08) translate3d(0,0,0);
     animation:kenburns 22s ease-in-out infinite alternate;
-    transition:transform 1.2s cubic-bezier(.2,.7,.2,1), filter .5s;
+    transition:transform .8s cubic-bezier(.2,.7,.2,1), filter .5s;
     z-index:0;
+    will-change:transform;
   }
-  .scene:hover img{filter:brightness(1.08)}
+  .scene:hover img{
+    animation-play-state:paused;
+    transform:scale(1.30) translate3d(calc(var(--mx, 0) * -1px), calc(var(--my, 0) * -1px), 0);
+    filter:brightness(1.1) saturate(1.05);
+  }
   .scene::after{
     content:"";position:absolute;inset:0;z-index:1;
     background:linear-gradient(180deg, oklch(0 0 0 / .35) 0%, oklch(0 0 0 / .05) 35%, oklch(0 0 0 / .85) 100%);
     pointer-events:none;
+    transition:background .4s ease;
+  }
+  .scene:hover::after{
+    background:linear-gradient(180deg, oklch(0 0 0 / .25) 0%, oklch(0 0 0 / 0) 25%, oklch(0 0 0 / .92) 100%);
   }
   .scene-icon{
     position:absolute;top:18px;left:18px;z-index:2;
     width:34px;height:34px;color:var(--beige-warm);
+    transition:transform .5s cubic-bezier(.2,.7,.2,1);
   }
+  .scene:hover .scene-icon{transform:translateY(-2px) scale(1.08)}
   .scene-icon path,.scene-icon circle,.scene-icon line,.scene-icon polyline,.scene-icon rect{
     fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;
     stroke-dasharray:200;stroke-dashoffset:200;
@@ -667,18 +703,43 @@
   }
   .scene-when::before{
     content:"";width:20px;height:1px;background:var(--beige-warm);display:inline-block;flex-shrink:0;
+    transition:width .5s cubic-bezier(.2,.7,.2,1);
   }
+  .scene:hover .scene-when::before{width:32px}
   .scene-title{
     font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
     font-size:24px;line-height:1.1;
     margin:0 0 8px 0;
     text-shadow:0 2px 12px oklch(0 0 0 / .7);
     color:var(--paper);
+    transition:transform .5s cubic-bezier(.2,.7,.2,1);
   }
+  .scene:hover .scene-title{transform:translateY(-2px)}
+  /* Reveal-on-hover paragraph */
   .scene-text{
     font-size:13px;line-height:1.55;
-    color:oklch(0.96 0.012 80 / .78);font-weight:300;margin:0;
+    color:oklch(0.96 0.012 80 / .85);font-weight:300;margin:0;
     text-shadow:0 1px 6px oklch(0 0 0 / .8);
+    max-height:0;opacity:0;
+    overflow:hidden;
+    transform:translateY(8px);
+    transition:
+      max-height .55s cubic-bezier(.2,.7,.2,1),
+      opacity .45s ease .05s,
+      transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none;
+  }
+  .scene:hover .scene-text{
+    max-height:200px;
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* Touch devices: always show paragraph (no hover) */
+  @media (hover: none){
+    .scene-text{max-height:200px;opacity:1;transform:none}
+    .scene:hover{transform:none;box-shadow:none}
+    .scene:hover img{animation-play-state:running;transform:scale(1.08)}
   }
 
   @media (max-width:1100px){
@@ -690,6 +751,7 @@
     .scenes{grid-template-columns:1fr 1fr}
     .scene{aspect-ratio:4/5}
     .scenes-head{flex-direction:column;align-items:flex-start;gap:18px;margin:64px 0 28px}
+    .scene:hover{transform:scale(1.06)}
   }
 
   /* ---------- PRICING ---------- */
@@ -852,10 +914,15 @@
 
   /* ---------- ACCESSIBILITY ---------- */
   @media (prefers-reduced-motion: reduce){
-    .bg-photo, .hero-bg, .fog, .ember, .firefly, .mist, .section-fog{
+    .bg-photo, .hero-bg, .fog, .ember, .firefly, .mist, .section-fog,
+    .scene img{
       animation:none !important;
     }
     .reveal{transition:opacity .3s ease}
+    .scene{transition:opacity .3s ease, border-color .3s ease}
+    .scene:hover{transform:none}
+    .scene:hover img{transform:scale(1.08)}
+    .scene-text{max-height:200px;opacity:1;transform:none}
   }
 
   @media (max-width:880px){
@@ -1232,7 +1299,7 @@
     </div>
 
     <div class="scenes">
-      <figure class="scene reveal">
+      <figure class="scene">
         <img src="assets/meadow-mist-dawn.jpg" alt="Утринна разходка по пътеката" loading="lazy" />
         <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
           <polyline points="6,38 16,22 24,30 32,16 42,32"/>
@@ -1246,7 +1313,7 @@
         </div>
       </figure>
 
-      <figure class="scene reveal delay-1">
+      <figure class="scene">
         <img src="assets/lake-kayakers.jpg" alt="Каяк по язовира" loading="lazy" />
         <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
           <path d="M8 24 Q24 16 40 24 Q24 32 8 24 Z"/>
@@ -1262,7 +1329,7 @@
         </div>
       </figure>
 
-      <figure class="scene reveal delay-2">
+      <figure class="scene">
         <img src="assets/lake-fisherman-mist.png" alt="Риболов на пристана в златна мъгла" loading="lazy" />
         <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
           <path d="M10 8 L36 32"/>
@@ -1278,7 +1345,7 @@
         </div>
       </figure>
 
-      <figure class="scene reveal delay-3">
+      <figure class="scene">
         <img src="assets/forest-sun-rays.jpg" alt="Велосипеден маршрут през боровата гора" loading="lazy" />
         <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
           <circle cx="13" cy="34" r="7"/>
@@ -1295,7 +1362,7 @@
         </div>
       </figure>
 
-      <figure class="scene reveal delay-3">
+      <figure class="scene">
         <img src="assets/gallery-tent-pines.png" alt="Наблюдение на птици в гората" loading="lazy" />
         <svg class="scene-icon" viewBox="0 0 48 48" aria-hidden="true">
           <circle cx="14" cy="26" r="6"/>
@@ -1559,6 +1626,61 @@
     e.style.animationDelay = delay + 's';
     e.style.setProperty('--dx', dx + 'px');
     emberRoot.appendChild(e);
+  }
+
+  // -------- Activity scenes: cursor-tilt parallax + staggered entrance --------
+  const scenes = Array.from(document.querySelectorAll('.scene'));
+  const supportsHover = window.matchMedia('(hover: hover)').matches;
+
+  // Staggered entrance via IntersectionObserver, overrides reveal delay
+  const sceneIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        const idx = scenes.indexOf(e.target);
+        e.target.style.transitionDelay = (idx * 0.12) + 's';
+        e.target.classList.add('in');
+        sceneIO.unobserve(e.target);
+        // Clear delay after entrance to let hover transitions feel instant
+        setTimeout(() => { e.target.style.transitionDelay = ''; }, 1500 + idx * 120);
+      }
+    });
+  }, { threshold: 0.25 });
+  scenes.forEach(s => sceneIO.observe(s));
+
+  // Cursor tilt: rotateX/Y based on cursor position within the card
+  if (supportsHover) {
+    const TILT_MAX = 6;   // degrees
+    const SHIFT_MAX = 14; // px shift for the photo (counter-direction)
+    scenes.forEach((scene) => {
+      let raf = 0;
+      let lastX = 0, lastY = 0;
+
+      const apply = () => {
+        raf = 0;
+        const rect = scene.getBoundingClientRect();
+        const px = (lastX - rect.left) / rect.width;   // 0..1
+        const py = (lastY - rect.top)  / rect.height;  // 0..1
+        const tiltY = (px - 0.5) *  TILT_MAX * 2;      // left/right
+        const tiltX = (0.5 - py) *  TILT_MAX * 2;      // up/down
+        const mx    = (px - 0.5) *  SHIFT_MAX * 2;     // photo counter-shift
+        const my    = (py - 0.5) *  SHIFT_MAX * 2;
+        scene.style.setProperty('--tx', tiltX.toFixed(2) + 'deg');
+        scene.style.setProperty('--ty', tiltY.toFixed(2) + 'deg');
+        scene.style.setProperty('--mx', mx.toFixed(2));
+        scene.style.setProperty('--my', my.toFixed(2));
+      };
+
+      scene.addEventListener('mousemove', (ev) => {
+        lastX = ev.clientX; lastY = ev.clientY;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      scene.addEventListener('mouseleave', () => {
+        scene.style.setProperty('--tx', '0deg');
+        scene.style.setProperty('--ty', '0deg');
+        scene.style.setProperty('--mx', '0');
+        scene.style.setProperty('--my', '0');
+      });
+    });
   }
 
   // -------- Fireflies (slower, paler, drift more) --------
