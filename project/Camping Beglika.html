@@ -619,7 +619,7 @@
     display:grid;
     grid-template-columns:repeat(5, 1fr);
     gap:14px;
-    perspective:1200px;
+    perspective:1400px;
   }
   .scene{
     position:relative;border-radius:8px;overflow:hidden;margin:0;
@@ -627,30 +627,45 @@
     border:1px solid oklch(0.96 0.012 80 / .12);
     background: oklch(0.18 0.025 220);
     isolation:isolate;
+    cursor:pointer;
     transform-style:preserve-3d;
     transform: scale(1) rotateX(0deg) rotateY(0deg);
     opacity:0;
+    filter:blur(0) brightness(1) saturate(1);
     transition:
-      opacity .9s ease,
+      opacity .55s ease,
       transform .55s cubic-bezier(.2,.7,.2,1),
+      filter .45s ease,
       box-shadow .55s ease,
       border-color .35s ease,
       z-index 0s linear .55s;
-    will-change:transform, opacity;
+    will-change:transform, opacity, filter;
   }
   .scene.in{opacity:1}
+  /* Smart transform-origin per card position so edge cards expand inward */
+  .scene:nth-child(1){transform-origin:left center}
+  .scene:nth-child(2){transform-origin:30% center}
+  .scene:nth-child(3){transform-origin:center center}
+  .scene:nth-child(4){transform-origin:70% center}
+  .scene:nth-child(5){transform-origin:right center}
   .scene:hover{
-    transform: scale(1.15) translate3d(0,0,0) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+    transform: scale(1.40) translate3d(0,0,0) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
     z-index:5;
     box-shadow:
-      0 30px 60px -20px oklch(0 0 0 / .65),
-      0 12px 28px -8px oklch(0 0 0 / .35);
-    border-color: oklch(0.96 0.012 80 / .28);
+      0 50px 90px -25px oklch(0 0 0 / .75),
+      0 20px 40px -10px oklch(0 0 0 / .45);
+    border-color: oklch(0.96 0.012 80 / .35);
     transition:
       transform .55s cubic-bezier(.2,.7,.2,1),
+      filter .45s ease,
       box-shadow .55s ease,
       border-color .35s ease,
       z-index 0s linear 0s;
+  }
+  /* Neighbor fade: when any scene is hovered, dim the others */
+  .scenes:hover .scene:not(:hover){
+    filter:blur(2px) brightness(.5) saturate(.85);
+    opacity:.55;
   }
   .scene img{
     position:absolute;inset:0;
@@ -742,16 +757,125 @@
     .scene:hover img{animation-play-state:running;transform:scale(1.08)}
   }
 
+  /* ---------- SCENE LIGHTBOX (click to fullscreen) ---------- */
+  .lightbox{
+    position:fixed;inset:0;z-index:9999;
+    background: oklch(0.04 0.01 220 / .92);
+    backdrop-filter:blur(18px) saturate(1.05);
+    -webkit-backdrop-filter:blur(18px) saturate(1.05);
+    display:flex;align-items:center;justify-content:center;
+    padding:60px 40px;
+    opacity:0;pointer-events:none;
+    transition:opacity .4s ease;
+  }
+  .lightbox.open{opacity:1;pointer-events:auto}
+  .lightbox-stage{
+    position:relative;
+    width:100%;max-width:1280px;max-height:calc(100vh - 120px);
+    display:grid;grid-template-columns:1.5fr 1fr;gap:48px;
+    transform:scale(.96) translateY(12px);
+    transition:transform .55s cubic-bezier(.2,.7,.2,1);
+  }
+  .lightbox.open .lightbox-stage{transform:scale(1) translateY(0)}
+  .lightbox-img{
+    position:relative;border-radius:10px;overflow:hidden;
+    background: oklch(0.10 0.02 220);
+    aspect-ratio:4/3;
+    border:1px solid oklch(0.96 0.012 80 / .14);
+  }
+  .lightbox-img img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transform:scale(1.04);
+    animation:kenburns 32s ease-in-out infinite alternate;
+  }
+  .lightbox-img::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, transparent 70%, oklch(0 0 0 / .35));
+    pointer-events:none;
+  }
+  .lightbox-copy{
+    color:var(--paper);
+    align-self:center;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .lightbox-when{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:oklch(0.96 0.012 80 / .65);
+    display:flex;align-items:center;gap:12px;
+  }
+  .lightbox-when::before{
+    content:"";width:28px;height:1px;background:var(--beige-warm);
+  }
+  .lightbox-title{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:clamp(38px, 4.4vw, 64px);line-height:1.05;letter-spacing:-.005em;
+    margin:0;color:var(--paper);
+  }
+  .lightbox-text{
+    font-size:18px;line-height:1.65;color:oklch(0.96 0.012 80 / .82);
+    font-weight:300;margin:0;max-width:42ch;
+  }
+  .lightbox-icon{
+    width:42px;height:42px;color:var(--beige-warm);
+  }
+  .lightbox-icon path,.lightbox-icon circle,.lightbox-icon line,
+  .lightbox-icon polyline,.lightbox-icon rect{
+    fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .lightbox-close{
+    position:absolute;top:24px;right:24px;
+    width:48px;height:48px;border-radius:50%;
+    border:1px solid oklch(0.96 0.012 80 / .25);
+    background: oklch(0.96 0.012 80 / .06);
+    color:var(--paper);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .25s, transform .25s, border-color .25s;
+  }
+  .lightbox-close:hover{
+    background: oklch(0.96 0.012 80 / .14);
+    border-color: oklch(0.96 0.012 80 / .45);
+    transform:rotate(90deg);
+  }
+  .lightbox-close svg{width:18px;height:18px}
+  .lightbox-close path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+  .lightbox-hint{
+    position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.20em;text-transform:uppercase;
+    color:oklch(0.96 0.012 80 / .45);
+    pointer-events:none;
+  }
+  body.lightbox-open{overflow:hidden}
+
+  @media (max-width:880px){
+    .lightbox{padding:30px 18px}
+    .lightbox-stage{grid-template-columns:1fr;gap:24px;max-height:none;overflow-y:auto}
+    .lightbox-img{aspect-ratio:5/4}
+    .lightbox-title{font-size:34px}
+    .lightbox-text{font-size:16px}
+    .lightbox-close{top:14px;right:14px;width:42px;height:42px}
+  }
+
   @media (max-width:1100px){
     .scenes{grid-template-columns:repeat(3, 1fr)}
     .scene:nth-child(4){grid-column:span 1}
     .scene:nth-child(5){grid-column:span 1}
+    /* Reset transform-origin overrides at this breakpoint */
+    .scene:nth-child(1){transform-origin:left center}
+    .scene:nth-child(2){transform-origin:center center}
+    .scene:nth-child(3){transform-origin:right center}
+    .scene:nth-child(4){transform-origin:left center}
+    .scene:nth-child(5){transform-origin:right center}
+    .scene:hover{transform:scale(1.25) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg))}
   }
   @media (max-width:680px){
     .scenes{grid-template-columns:1fr 1fr}
     .scene{aspect-ratio:4/5}
     .scenes-head{flex-direction:column;align-items:flex-start;gap:18px;margin:64px 0 28px}
-    .scene:hover{transform:scale(1.06)}
+    .scene:nth-child(odd){transform-origin:left center}
+    .scene:nth-child(even){transform-origin:right center}
+    .scene:hover{transform:scale(1.10)}
   }
 
   /* ---------- PRICING ---------- */
@@ -915,7 +1039,7 @@
   /* ---------- ACCESSIBILITY ---------- */
   @media (prefers-reduced-motion: reduce){
     .bg-photo, .hero-bg, .fog, .ember, .firefly, .mist, .section-fog,
-    .scene img{
+    .scene img, .lightbox-img img{
       animation:none !important;
     }
     .reveal{transition:opacity .3s ease}
@@ -923,6 +1047,9 @@
     .scene:hover{transform:none}
     .scene:hover img{transform:scale(1.08)}
     .scene-text{max-height:200px;opacity:1;transform:none}
+    .scenes:hover .scene:not(:hover){filter:none;opacity:1}
+    .lightbox{transition:opacity .2s ease}
+    .lightbox-stage{transition:none;transform:none}
   }
 
   @media (max-width:880px){
@@ -1628,9 +1755,77 @@
     emberRoot.appendChild(e);
   }
 
-  // -------- Activity scenes: cursor-tilt parallax + staggered entrance --------
+  // -------- Activity scenes: cursor-tilt parallax + staggered entrance + click-to-fullscreen --------
   const scenes = Array.from(document.querySelectorAll('.scene'));
   const supportsHover = window.matchMedia('(hover: hover)').matches;
+
+  // -------- Lightbox --------
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.setAttribute('aria-hidden', 'true');
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.innerHTML = `
+    <div class="lightbox-stage">
+      <div class="lightbox-img"><img alt="" /></div>
+      <div class="lightbox-copy">
+        <svg class="lightbox-icon" viewBox="0 0 48 48" aria-hidden="true"></svg>
+        <div class="lightbox-when"></div>
+        <h3 class="lightbox-title"></h3>
+        <p class="lightbox-text"></p>
+      </div>
+    </div>
+    <button class="lightbox-close" aria-label="Затвори">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
+    </button>
+    <div class="lightbox-hint">Esc · затвори</div>
+  `;
+  document.body.appendChild(lightbox);
+
+  const lbImg     = lightbox.querySelector('.lightbox-img img');
+  const lbWhen    = lightbox.querySelector('.lightbox-when');
+  const lbTitle   = lightbox.querySelector('.lightbox-title');
+  const lbText    = lightbox.querySelector('.lightbox-text');
+  const lbIcon    = lightbox.querySelector('.lightbox-icon');
+  const lbClose   = lightbox.querySelector('.lightbox-close');
+
+  function openLightbox(scene){
+    const img = scene.querySelector('img');
+    lbImg.src = img.src;
+    lbImg.alt = img.alt || '';
+    lbWhen.textContent  = scene.querySelector('.scene-when').textContent.trim();
+    lbTitle.textContent = scene.querySelector('.scene-title').textContent.trim();
+    lbText.textContent  = scene.querySelector('.scene-text').textContent.trim();
+    // Clone the scene's icon SVG into the lightbox icon (preserve paths)
+    const sceneIconSvg = scene.querySelector('.scene-icon');
+    if (sceneIconSvg) lbIcon.innerHTML = sceneIconSvg.innerHTML;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+  }
+  scenes.forEach((scene) => {
+    scene.addEventListener('click', () => openLightbox(scene));
+    // Keyboard: make scenes focusable for a11y
+    scene.setAttribute('tabindex', '0');
+    scene.setAttribute('role', 'button');
+    scene.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        openLightbox(scene);
+      }
+    });
+  });
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (ev) => {
+    if (ev.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
 
   // Staggered entrance via IntersectionObserver, overrides reveal delay
   const sceneIO = new IntersectionObserver((entries) => {
