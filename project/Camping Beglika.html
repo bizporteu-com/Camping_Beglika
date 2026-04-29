@@ -46,6 +46,7 @@
     color:var(--paper);
     transition:background .5s ease, color .5s ease, padding .35s ease, border-color .5s ease;
     border-bottom:1px solid transparent;
+    text-shadow:0 1px 2px oklch(0 0 0 / .35), 0 2px 12px oklch(0 0 0 / .35);
   }
   .nav.solid{
     background:color-mix(in oklab, var(--paper) 92%, transparent);
@@ -54,6 +55,7 @@
     backdrop-filter:blur(14px) saturate(1.1);
     -webkit-backdrop-filter:blur(14px) saturate(1.1);
     border-bottom-color:var(--rule);
+    text-shadow:none;
   }
   .brand{display:flex;align-items:center;gap:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:13px}
   .brand-mark{
@@ -62,16 +64,33 @@
     display:grid;place-items:center;
     font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;font-weight:500;
     letter-spacing:0;
+    background: oklch(0 0 0 / .14);
   }
+  .nav.solid .brand-mark{background:transparent}
   .nav-links{display:flex;gap:34px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
-  .nav-links a{color:inherit;text-decoration:none;opacity:.85;transition:opacity .2s}
-  .nav-links a:hover{opacity:1}
+  .nav-links a{
+    color:inherit;text-decoration:none;
+    font-weight:500;
+    opacity:1;
+    transition:color .2s, opacity .2s;
+    position:relative;
+    padding:4px 0;
+  }
+  .nav-links a::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;
+    height:1px;background:currentColor;
+    transform:scaleX(0);transform-origin:left center;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .nav-links a:hover::after{transform:scaleX(1)}
   .nav-cta{
     border:1px solid currentColor;border-radius:999px;
     padding:9px 18px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    background:transparent;color:inherit;cursor:pointer;
-    transition:background .25s, color .25s;
+    background: oklch(0 0 0 / .18);color:inherit;cursor:pointer;
+    transition:background .25s, color .25s, border-color .25s;
+    font-weight:500;
   }
+  .nav.solid .nav-cta{background:transparent}
   .nav-cta:hover{background:currentColor}
   .nav-cta:hover span{color:var(--paper)}
   .nav.solid .nav-cta:hover span{color:var(--paper)}
@@ -210,12 +229,44 @@
   .hero-meta{
     position:absolute;left:40px;right:40px;bottom:24px;z-index:3;
     display:flex;justify-content:space-between;align-items:flex-end;
-    color:oklch(0.96 0.012 80 / .8);
+    color:var(--paper);
     pointer-events:none;
+    text-shadow:0 1px 2px oklch(0 0 0 / .55), 0 2px 12px oklch(0 0 0 / .45);
   }
-  .hero-meta .group{display:flex;flex-direction:column;gap:4px}
-  .hero-meta .label{font-size:10px;letter-spacing:.24em;text-transform:uppercase;opacity:.7}
-  .hero-meta .val{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px}
+  .hero-meta .group{
+    display:flex;flex-direction:column;gap:6px;
+    padding:10px 14px;
+    background: oklch(0 0 0 / .18);
+    backdrop-filter: blur(6px) saturate(1.1);
+    -webkit-backdrop-filter: blur(6px) saturate(1.1);
+    border:1px solid oklch(0.96 0.012 80 / .14);
+    border-radius:8px;
+  }
+  .hero-meta .label{
+    font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    opacity:.92;font-weight:500;
+    color:oklch(0.96 0.012 80 / .9);
+  }
+  .hero-meta .val{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;
+    color:var(--paper);
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  /* Live data pulse dot */
+  .live-dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 8px var(--ember), 0 0 16px oklch(0.7 0.18 50 / .5);
+    animation:livePulse 2.4s ease-in-out infinite;
+    flex-shrink:0;
+  }
+  @keyframes livePulse{
+    0%,100%{opacity:.4;transform:scale(.85)}
+    50%{opacity:1;transform:scale(1.15)}
+  }
+  /* Smooth fade when live data updates */
+  .hero-meta .val.is-updating{opacity:.4;transition:opacity .25s ease}
+  .hero-meta .val{transition:opacity .35s ease}
 
   .scroll-hint{
     position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:3;
@@ -1117,8 +1168,8 @@
       <span class="val">Batak ridge, BG</span>
     </div>
     <div class="group" style="text-align:right">
-      <span class="label mono" data-copy="meta-label">На място днес</span>
-      <span class="val" data-copy="meta-val">8 °C — лек ветрец, аромат на смола</span>
+      <span class="label mono" data-copy="meta-label">На място сега</span>
+      <span class="val" data-copy="meta-val" data-live="weather"><span class="live-dot" aria-hidden="true"></span><span class="val-text">…</span></span>
     </div>
   </div>
 
@@ -1735,6 +1786,57 @@
   }, {threshold:0.4});
   document.querySelectorAll('.draw').forEach(el => drawIO.observe(el));
 
+  // -------- Live weather (Open-Meteo, no API key needed) --------
+  // Coordinates of Camping Beglika, Western Rhodopes (~41.82°N, 24.15°E)
+  const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=41.82&longitude=24.15&current=temperature_2m,wind_speed_10m,weather_code&timezone=Europe%2FSofia';
+
+  // WMO weather codes → Bulgarian editorial descriptors
+  function describeWeather(code, windKmh){
+    const breeze = windKmh < 6 ? '' : windKmh < 18 ? 'лек ветрец' : windKmh < 32 ? 'свеж вятър' : 'силен вятър';
+    let cond;
+    if (code === 0)              cond = 'ясно небе, аромат на смола';
+    else if ([1].includes(code)) cond = 'предимно ясно, мирис на бор';
+    else if ([2].includes(code)) cond = 'разкъсана облачност, тиха долина';
+    else if ([3].includes(code)) cond = 'облачно, мек въздух';
+    else if ([45,48].includes(code)) cond = 'мъгла, дърветата изчезват';
+    else if ([51,53,55,56,57].includes(code)) cond = 'ситен дъжд, мирис на пръст';
+    else if ([61,63,65,66,67,80,81,82].includes(code)) cond = 'тих дъжд, мирис на бор';
+    else if ([71,73,75,77,85,86].includes(code)) cond = 'сняг, тишина по върховете';
+    else if ([95,96,99].includes(code)) cond = 'буря, водата кипи';
+    else cond = 'тих въздух';
+    if (breeze) cond = breeze + ', ' + cond;
+    return cond;
+  }
+
+  function setLiveWeather(text){
+    const wrap = document.querySelector('[data-live="weather"]');
+    if (!wrap) return;
+    const t = wrap.querySelector('.val-text');
+    if (!t) return;
+    wrap.classList.add('is-updating');
+    setTimeout(() => {
+      t.textContent = text;
+      wrap.classList.remove('is-updating');
+    }, 220);
+  }
+
+  function fetchWeather(){
+    fetch(WEATHER_URL, { cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        const c = data.current || {};
+        const temp = Math.round(c.temperature_2m);
+        const desc = describeWeather(c.weather_code, c.wind_speed_10m || 0);
+        setLiveWeather(`${temp}°C — ${desc}`);
+      })
+      .catch(() => {
+        setLiveWeather('8°C — лек ветрец, аромат на смола');
+      });
+  }
+  fetchWeather();
+  // Refresh every 15 minutes
+  setInterval(fetchWeather, 15 * 60 * 1000);
+
   // -------- Embers --------
   const emberRoot = document.getElementById('embers');
   const N = 26;
@@ -2136,17 +2238,17 @@
     if (!s) { s = document.createElement('style'); s.id = 'tweaks-vars'; document.head.appendChild(s); }
     s.textContent = css;
 
-    // Hour-driven hero meta (only when default editorial mood — moods override)
+    // Hour-driven hero meta label (only when default editorial mood — moods override)
     if (t.mood === 'editorial') {
       const lab = document.querySelector('[data-copy="meta-label"]');
-      const val = document.querySelector('[data-copy="meta-val"]');
       if (lab) lab.textContent = preset.meta.label;
-      if (val) val.textContent = preset.meta.val;
+      // meta-val is now driven by live weather; do not override
     }
 
-    // Mood copy
+    // Mood copy — skip meta-val (live weather), preserve live-dot if present
     const copy = MOOD_COPY[t.mood];
     Object.keys(copy).forEach((key) => {
+      if (key === 'meta-val') return;  // controlled by live weather
       const el = document.querySelector(`[data-copy="${key}"]`);
       if (el) el.innerHTML = copy[key];
     });
